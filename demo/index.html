@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es" data-quality="high">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KuAvatars</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #14301f;
+        --panel: #1d4029;
+        --ink: #f3ecd8;
+        --muted: #b9c9b4;
+        --accent: #ffcb3d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.4 system-ui, sans-serif;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      h1 {
+        margin: 0 0 4px;
+        color: var(--accent);
+      }
+      h2 {
+        margin: 28px 0 10px;
+      }
+      p.lead {
+        margin: 0 0 12px;
+        color: var(--muted);
+      }
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin: 8px 0;
+      }
+      button,
+      select {
+        font: inherit;
+        color: var(--ink);
+        background: var(--panel);
+        border: 1px solid #3c6b49;
+        border-radius: 8px;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: var(--accent);
+      }
+      .grid-wrap {
+        overflow-x: auto;
+      }
+      table.grid {
+        border-collapse: collapse;
+      }
+      table.grid th {
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 12px;
+        padding: 4px;
+        text-align: center;
+        white-space: nowrap;
+      }
+      table.grid th.row {
+        text-align: right;
+      }
+      table.grid td {
+        padding: 4px;
+      }
+      .cell {
+        width: 64px;
+        height: 64px;
+      }
+      .cell .face-static {
+        width: 100%;
+        height: 100%;
+      }
+      .live {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+      .live figure {
+        margin: 0;
+        width: 88px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .live .face-static {
+        width: 88px;
+        height: 88px;
+      }
+      .table {
+        position: relative;
+        height: 380px;
+        border-radius: 24px;
+        background: radial-gradient(ellipse at center, #2b6b3f, #1a4428);
+        margin: 8px 0;
+      }
+      .seat {
+        position: absolute;
+        width: 96px;
+        height: 96px;
+        --d: 96px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.18);
+        transform: translate(-50%, -50%);
+      }
+      .seat-label {
+        position: absolute;
+        top: 104%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .seat.turn {
+        box-shadow: 0 0 0 3px var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>KuAvatars</h1>
+      <p class="lead">Avatares animados compartidos por Kudominoes y KuCards.</p>
+
+      <div class="bar">
+        <label>Calidad gráfica <select id="quality"><option value="high">Alta</option><option value="medium">Media</option><option value="low">Baja</option></select></label>
+        <label><input type="checkbox" id="reduced" /> Reducir movimiento</label>
+      </div>
+
+      <h2>Mesa en vivo</h2>
+      <p class="lead">Cuatro asientos con el controlador. Si nadie juega, los que esperan se duermen; un golpe fuerte los despierta.</p>
+      <div class="bar" id="seatbar"></div>
+      <div class="bar" id="hooks"></div>
+      <div class="table" id="table"></div>
+
+      <h2>Caras vivas</h2>
+      <p class="lead">Caras pequeñas para tarjetas y selectores: parpadean, miran y se balancean.</p>
+      <div class="bar"><label>Ánimo <select id="liveMood"></select></label></div>
+      <div class="live" id="live"></div>
+
+      <h2>Todas las caras y ánimos</h2>
+      <div class="grid-wrap"><table class="grid" id="grid"></table></div>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
