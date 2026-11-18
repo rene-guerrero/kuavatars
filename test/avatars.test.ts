@@ -17,7 +17,7 @@ describe('faces', () => {
   });
 
   it('lists every mood', () => {
-    expect([...MOODS].sort()).toEqual(['amazed', 'angry', 'asleep', 'happy', 'idle', 'meh', 'perk', 'sad', 'sleepy', 'smug', 'thinking']);
+    expect([...MOODS].sort()).toEqual(['amazed', 'angry', 'asleep', 'cry', 'happy', 'hurt', 'idle', 'meh', 'mew', 'perk', 'sad', 'shout', 'sleepy', 'smug', 'thinking']);
   });
 });
 

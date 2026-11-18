@@ -4,158 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>KuAvatars</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        --bg: #14301f;
-        --panel: #1d4029;
-        --ink: #f3ecd8;
-        --muted: #b9c9b4;
-        --accent: #ffcb3d;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--ink);
-        font: 15px/1.4 system-ui, sans-serif;
-      }
-      main {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 16px;
-      }
-      h1 {
-        margin: 0 0 4px;
-        color: var(--accent);
-      }
-      h2 {
-        margin: 28px 0 10px;
-      }
-      p.lead {
-        margin: 0 0 12px;
-        color: var(--muted);
-      }
-      .bar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-        margin: 8px 0;
-      }
-      button,
-      select {
-        font: inherit;
-        color: var(--ink);
-        background: var(--panel);
-        border: 1px solid #3c6b49;
-        border-radius: 8px;
-        padding: 6px 10px;
-        cursor: pointer;
-      }
-      button:hover {
-        border-color: var(--accent);
-      }
-      .grid-wrap {
-        overflow-x: auto;
-      }
-      table.grid {
-        border-collapse: collapse;
-      }
-      table.grid th {
-        font-weight: 600;
-        color: var(--muted);
-        font-size: 12px;
-        padding: 4px;
-        text-align: center;
-        white-space: nowrap;
-      }
-      table.grid th.row {
-        text-align: right;
-      }
-      table.grid td {
-        padding: 4px;
-      }
-      .cell {
-        width: 64px;
-        height: 64px;
-      }
-      .cell .face-static {
-        width: 100%;
-        height: 100%;
-      }
-      .live {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-      .live figure {
-        margin: 0;
-        width: 88px;
-        text-align: center;
-        font-size: 12px;
-        color: var(--muted);
-      }
-      .live .face-static {
-        width: 88px;
-        height: 88px;
-      }
-      .table {
-        position: relative;
-        height: 380px;
-        border-radius: 24px;
-        background: radial-gradient(ellipse at center, #2b6b3f, #1a4428);
-        margin: 8px 0;
-      }
-      .seat {
-        position: absolute;
-        width: 96px;
-        height: 96px;
-        --d: 96px;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.18);
-        transform: translate(-50%, -50%);
-      }
-      .seat-label {
-        position: absolute;
-        top: 104%;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 12px;
-        color: var(--muted);
-        white-space: nowrap;
-      }
-      .seat.turn {
-        box-shadow: 0 0 0 3px var(--accent);
-      }
-    </style>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='33.5' r='30' fill='%23EE9D1C'/%3E%3Ccircle cx='32' cy='31.5' r='28.5' fill='%23FFCB3D'/%3E%3Cellipse cx='23' cy='17' rx='9' ry='4.5' fill='%23FFE28A' transform='rotate(-28 23 17)'/%3E%3Crect x='19.5' y='23' width='6.5' height='11' rx='3.25' fill='%233A2410'/%3E%3Crect x='38' y='23' width='6.5' height='11' rx='3.25' fill='%233A2410'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;600;700;800&display=swap" />
   </head>
   <body>
-    <main>
-      <h1>KuAvatars</h1>
-      <p class="lead">Avatares animados compartidos por Kudominoes y KuCards.</p>
+    <header class="topbar">
+      <a class="brand" href="#crear" aria-label="KuAvatars, inicio">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Ku<b>Avatars</b></span>
+      </a>
+      <div class="settings" id="settings"></div>
+    </header>
 
-      <div class="bar">
-        <label>Calidad gráfica <select id="quality"><option value="high">Alta</option><option value="medium">Media</option><option value="low">Baja</option></select></label>
-        <label><input type="checkbox" id="reduced" /> Reducir movimiento</label>
-      </div>
+    <div class="layout">
+      <nav class="nav" aria-label="Secciones">
+        <span class="nav-title">Probar</span>
+        <a href="#crear">Crear una cara</a>
+        <a href="#mesa">Mesa en vivo</a>
+        <a href="#vivas">Caras pequeñas</a>
+        <span class="nav-title">Galería</span>
+        <a href="#ojos">Ojos</a>
+        <a href="#gafas">Gafas</a>
+        <a href="#bocas">Bocas</a>
+        <a href="#peinados">Peinados</a>
+        <a href="#bigotes">Bigotes</a>
+        <a href="#barbas">Barbas</a>
+        <a href="#sombreros">Sombreros</a>
+        <a href="#gestos">Gestos</a>
+        <a href="#tonos">Tonos de piel</a>
+        <a href="#todas">Todas las caras</a>
+      </nav>
 
-      <h2>Mesa en vivo</h2>
-      <p class="lead">Cuatro asientos con el controlador. Si nadie juega, los que esperan se duermen; un golpe fuerte los despierta.</p>
-      <div class="bar" id="seatbar"></div>
-      <div class="bar" id="hooks"></div>
-      <div class="table" id="table"></div>
+      <main>
+        <section class="block" id="crear">
+          <header class="block-head">
+            <h1>Crea una cara</h1>
+            <p class="lead">Elige piel, ojos, boca, pelo y accesorios. Cada opción muestra tu cara con ese cambio. El resultado es un FaceSpec que cualquier juego puede guardar.</p>
+          </header>
+          <div class="creator" id="creator"></div>
+        </section>
 
-      <h2>Caras vivas</h2>
-      <p class="lead">Caras pequeñas para tarjetas y selectores: parpadean, miran y se balancean.</p>
-      <div class="bar"><label>Ánimo <select id="liveMood"></select></label></div>
-      <div class="live" id="live"></div>
+        <section class="block" id="mesa">
+          <header class="block-head">
+            <h2>Mesa en vivo</h2>
+            <p class="lead">El controlador de asientos: turnos, jugadas, rondas y gestos. Si nadie juega, los que esperan se duermen; un golpe fuerte los despierta.</p>
+          </header>
+          <div class="table-wrap card">
+            <div class="felt" id="felt"></div>
+            <div class="table-side">
+              <p class="status" id="table-status" aria-live="polite"></p>
+              <div id="hooks"></div>
+            </div>
+          </div>
+        </section>
 
-      <h2>Todas las caras y ánimos</h2>
-      <div class="grid-wrap"><table class="grid" id="grid"></table></div>
-    </main>
+        <section class="block" id="vivas">
+          <header class="block-head">
+            <h2>Caras pequeñas</h2>
+            <p class="lead">Para tarjetas y selectores: parpadean, miran alrededor y se balancean con un solo bucle compartido.</p>
+            <label class="inline-field">Ánimo <select class="select" id="live-mood"></select></label>
+          </header>
+          <div class="ltiles card" id="live"></div>
+        </section>
+
+        <div id="gallery"></div>
+
+        <section class="block" id="todas">
+          <header class="block-head">
+            <h2>Todas las caras y ánimos</h2>
+            <p class="lead">Las caras incluidas, en cada uno de los trece ánimos.</p>
+          </header>
+          <div class="table-scroll card"><table class="all-faces" id="all-faces"></table></div>
+        </section>
+      </main>
+    </div>
     <script type="module" src="./main.ts"></script>
   </body>
 </html>

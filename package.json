@@ -1,8 +1,8 @@
 {
   "name": "kuavatars",
   "private": true,
-  "version": "0.1.0",
-  "description": "Animated 2D SVG emoji avatars shared by Kudominoes and KuCards",
+  "version": "0.2.0",
+  "description": "Animated 2D SVG emoji avatars for table games",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",

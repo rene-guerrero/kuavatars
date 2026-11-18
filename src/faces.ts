@@ -6,9 +6,23 @@
  * character id. Names, levels and descriptions of the characters live in each game, not here.
  */
 
+import type { EyeShape } from './eyes';
+import type { Eyewear } from './eyewear';
+import type { MouthStyle } from './mouths';
+import type { BeardStyle, HairStyle, HatKind, StacheStyle } from './parts';
+
 /** A composable avatar face: the same round head with a few features (or Papi Zorg's alien head). */
 export interface FaceSpec {
+  /** eye colour (Papi Zorg: the colour of his big almond eyes). See EYE_COLORS */
   iris: string;
+  /** eye shape (default 'round'). See EYE_SHAPES */
+  eyes?: EyeShape;
+  /** mouth style (default 'smile'). See MOUTHS */
+  mouth?: MouthStyle;
+  /** lip colour for the 'lips' mouth (any hex colour) */
+  lipColor?: string;
+  /** skin colour, any hex colour (default: the classic yellow; Papi Zorg: green). See SKIN_TONES */
+  skin?: string;
   lashes?: boolean;
   /** brow shape: plain (default), thick, raised (one brow up), aviator (straight-ish, set for sunglasses) */
   brows?: 'plain' | 'thick' | 'raised' | 'aviator';
@@ -16,12 +30,30 @@ export interface FaceSpec {
   browColor?: string;
   smirk?: boolean;
   freckles?: boolean;
-  /** round glasses */
+  /** eyewear (see EYEWEAR): round / square glasses, aviators, sunglasses, cat-eye, monocle, eye patch */
+  eyewear?: Eyewear;
+  /** round glasses (same as eyewear: 'round'; kept for older faces) */
   glasses?: boolean;
-  /** gold aviator sunglasses (the eyes are hidden) */
+  /** gold aviator sunglasses (same as eyewear: 'aviators'; kept for older faces) */
   aviators?: boolean;
-  /** handlebar moustache (no mouth) */
-  stache?: 'brown' | 'grey';
+  /** a moustache in this colour: a STACHE_COLORS key ('brown', 'grey', 'black'…) or any hex colour */
+  stache?: string;
+  /** moustache shape (default 'handlebar'); some shapes leave the mouth visible. See STACHES */
+  stacheStyle?: StacheStyle;
+  /** a beard. See BEARDS */
+  beard?: BeardStyle;
+  /** beard colour: a STACHE_COLORS key or any hex colour (default: the moustache's, else brown) */
+  beardColor?: string;
+  /** hairstyle. See HAIR_MEN / HAIR_WOMEN */
+  hair?: HairStyle;
+  /** hair colour: a HAIR_COLORS key or any hex colour (default brown) */
+  hairColor?: string;
+  /** a hat. See HATS */
+  hat?: HatKind;
+  /** hat colour, any hex colour (default: each hat's own) */
+  hatColor?: string;
+  /** white cartoon gloves instead of bare hands (when the face gestures) */
+  gloves?: boolean;
   /** the green alien head */
   alien?: boolean;
   /** a small flower clip on the head */
@@ -60,3 +92,10 @@ export const CHARACTER_FACES = {
   zorg: { iris: '#101418', alien: true },
 } satisfies Record<string, FaceSpec>;
 export type CharacterId = keyof typeof CHARACTER_FACES;
+
+// colour choices (pure data too, so pickers and servers can use them without the DOM code)
+export { DEFAULT_ALIEN_SKIN, DEFAULT_SKIN, EYE_COLORS, SKIN_TONES, type EyeColorId, type SkinToneId } from './colors';
+export { BEARDS, HAIRS, HAIR_COLORS, HAIR_MEN, HAIR_WOMEN, HATS, HAT_COLORS, STACHES, STACHE_COLORS, type BeardStyle, type HairStyle, type HatKind, type StacheStyle } from './parts';
+export { EYE_SHAPES, type EyeShape } from './eyes';
+export { DEFAULT_LIPS, MOUTHS, type MouthStyle } from './mouths';
+export { EYEWEAR, type Eyewear } from './eyewear';

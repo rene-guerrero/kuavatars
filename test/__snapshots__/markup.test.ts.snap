@@ -1,0 +1,30 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`built-in faces render unchanged > character faces 1`] = `
+{
+  "andres": "2213aaa2",
+  "carlos": "f365a741",
+  "elena": "78ae7a40",
+  "julio": "4e513100",
+  "lola": "8118210f",
+  "marta": "6cf5596b",
+  "nico": "1f0a0bdb",
+  "pepe": "2c504af4",
+  "rosa": "d2f9dc1f",
+  "zorg": "ee6cf885",
+}
+`;
+
+exports[`built-in faces render unchanged > human faces 1`] = `
+{
+  "0": "40576988",
+  "1": "7fc54b3c",
+  "2": "2213aaa2",
+  "3": "ba15a861",
+  "4": "015ba970",
+  "5": "9dc21313",
+  "6": "1f662502",
+  "7": "974ece2f",
+  "8": "d2f9dc1f",
+}
+`;
