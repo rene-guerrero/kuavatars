@@ -11,8 +11,8 @@ import type {
   MouthStyle,
   SkinToneId,
   StacheStyle,
-} from '../src/index';
-import type { HAIR_COLORS, STACHE_COLORS } from '../src/index';
+} from './index';
+import type { HAIR_COLORS, STACHE_COLORS } from './index';
 
 export const MOOD_ES: Record<Mood, string> = {
   idle: 'Tranquilo',
@@ -186,3 +186,49 @@ export const BROW_ES: Record<'plain' | 'thick' | 'raised' | 'aviator', string> =
 
 export const LIP_SWATCHES = ['#D9455F', '#B8264A', '#F07A8C', '#C2603E', '#8A3A6E', '#9A5A4A'];
 export const HAT_SWATCHES = ['#D9443A', '#2E2A33', '#A86B3C', '#3F74D6', '#E6C46E', '#F2B630', '#7B5CF0', '#2FA36B', '#F2F0EA'];
+
+/** the editor's own texts (buttons, tabs, field titles, notes) */
+export const EDITOR_ES = {
+  tabs: { cara: 'Cara y ojos', rasgos: 'Cejas y rasgos', boca: 'Boca', pelo: 'Pelo', vello: 'Bigote y barba', accesorios: 'Accesorios' },
+  head: 'Cabeza',
+  headRound: 'Redonda',
+  headAlien: 'Alienígena',
+  skin: 'Color de piel',
+  eyeColor: 'Color de ojos',
+  eyeShape: 'Forma de ojos',
+  brows: 'Cejas',
+  browColor: 'Color de cejas',
+  browLikeHair: 'Como el pelo',
+  features: 'Rasgos',
+  mouth: 'Estilo de boca',
+  lipColor: 'Color de labios',
+  hairMen: 'Hombre',
+  hairWomen: 'Mujer',
+  noHair: 'Sin pelo',
+  hairColor: 'Color de pelo',
+  stache: 'Bigote',
+  noStache: 'Sin bigote',
+  stacheColor: 'Color del bigote',
+  beard: 'Barba',
+  noBeard: 'Sin barba',
+  beardColor: 'Color de la barba',
+  eyewear: 'Gafas',
+  noEyewear: 'Sin gafas',
+  hat: 'Sombrero',
+  noHat: 'Sin sombrero',
+  hatColor: 'Color del sombrero',
+  hatOriginal: 'Color original',
+  others: 'Otros',
+  glovesNote: 'Los guantes se ven cuando la cara hace un gesto con las manos.',
+  alienNoBrows: 'La cabeza alienígena no tiene cejas ni rasgos.',
+  alienOwnMouth: 'La cabeza alienígena tiene su propia boca.',
+  alienNoHair: 'La cabeza alienígena no tiene pelo.',
+  alienNoFacialHair: 'La cabeza alienígena no tiene bigote ni barba.',
+  mood: 'Ánimo',
+  gestures: 'Gestos con las manos',
+  random: 'Aleatorio',
+  reset: 'Restablecer',
+  otherColor: 'Otro color',
+  flags: { lashes: 'Pestañas', freckles: 'Pecas', smirk: 'Sonrisa ladeada', mole: 'Lunar', cool: 'Mirada relajada', flower: 'Flor', gloves: 'Guantes' },
+};
+export type EditorTexts = typeof EDITOR_ES;

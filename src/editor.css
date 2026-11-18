@@ -1,0 +1,271 @@
+/*
+ * KuAvatars editor styles. Import with `import 'kuavatars/editor.css'` (after avatars.css).
+ * Theme it by setting these on .kua-editor or any ancestor:
+ *   --kua-panel      panel / tile background
+ *   --kua-panel-2    raised controls (chips, tiles)
+ *   --kua-line       borders
+ *   --kua-ink        text
+ *   --kua-muted      secondary text
+ *   --kua-accent     selection and the main button
+ *   --kua-accent-ink text on the accent
+ *   --kua-stage      background behind the big preview face
+ * It lays out in one column on narrow containers and two on wide ones (container query, with a
+ * media-query fallback for older WebViews).
+ */
+.kua-editor {
+  --_panel: var(--kua-panel, rgba(127, 127, 127, 0.08));
+  --_panel-2: var(--kua-panel-2, rgba(127, 127, 127, 0.14));
+  --_line: var(--kua-line, rgba(127, 127, 127, 0.28));
+  --_ink: var(--kua-ink, inherit);
+  --_muted: var(--kua-muted, rgba(127, 127, 127, 1));
+  --_accent: var(--kua-accent, #ffcb3d);
+  --_accent-ink: var(--kua-accent-ink, #2b1d00);
+  --_stage: var(--kua-stage, radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.16) 0%, rgba(127, 127, 127, 0.1) 70%));
+  container-type: inline-size;
+  color: var(--_ink);
+  font: inherit;
+}
+.kua-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+@container (min-width: 720px) {
+  .kua-layout {
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+@supports not (container-type: inline-size) {
+  @media (min-width: 900px) {
+    .kua-layout {
+      grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+}
+.kua-editor button,
+.kua-editor input {
+  font: inherit;
+  color: inherit;
+}
+.kua-editor :focus-visible {
+  outline: 2px solid var(--_accent);
+  outline-offset: 2px;
+}
+
+/* preview */
+.kua-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.kua-stage {
+  display: grid;
+  place-items: center;
+  height: 210px;
+  border-radius: 14px;
+  background: var(--_stage);
+  overflow: hidden;
+}
+.kua-stage-face {
+  width: 150px;
+  height: 150px;
+}
+@container (min-width: 720px) {
+  .kua-stage {
+    height: 260px;
+  }
+  .kua-stage-face {
+    width: 180px;
+    height: 180px;
+  }
+}
+.kua-actions {
+  display: flex;
+  gap: 8px;
+}
+.kua-actions .kua-btn {
+  flex: 1 1 auto;
+}
+.kua-mini-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--_muted);
+}
+
+/* buttons, chips */
+.kua-btn {
+  border: 1px solid var(--_line);
+  background: var(--_panel-2);
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+.kua-btn-accent {
+  background: var(--_accent);
+  border-color: var(--_accent);
+  color: var(--_accent-ink);
+}
+.kua-btn-small {
+  padding: 4px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+.kua-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.kua-chip {
+  border: 1px solid var(--_line);
+  background: var(--_panel-2);
+  padding: 5px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+.kua-chip[aria-pressed='true'] {
+  background: var(--_accent);
+  border-color: var(--_accent);
+  color: var(--_accent-ink);
+}
+.kua-chip-ghost {
+  background: none;
+}
+
+/* controls */
+.kua-controls {
+  min-width: 0;
+  border: 1px solid var(--_line);
+  border-radius: 14px;
+  background: var(--_panel);
+  overflow: hidden;
+}
+.kua-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 8px 0;
+  border-bottom: 1px solid var(--_line);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.kua-tab {
+  flex: none;
+  border: 0;
+  background: none;
+  padding: 8px 12px 10px;
+  cursor: pointer;
+  color: var(--_muted);
+  font-weight: 800;
+  border-bottom: 3px solid transparent;
+}
+.kua-tab[aria-selected='true'] {
+  color: var(--_ink);
+  border-bottom-color: var(--_accent);
+}
+.kua-panel {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.kua-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.kua-field-title {
+  font-weight: 800;
+  font-size: 14px;
+}
+.kua-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--_muted);
+}
+.kua-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.kua-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 7px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--_panel-2);
+  cursor: pointer;
+  min-width: 0;
+}
+.kua-tile[aria-pressed='true'] {
+  border-color: var(--_accent);
+}
+.kua-thumb {
+  width: 54px;
+  height: 54px;
+}
+.kua-tile-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--_muted);
+  text-align: center;
+  line-height: 1.2;
+}
+.kua-tile[aria-pressed='true'] .kua-tile-label {
+  color: var(--_ink);
+}
+.kua-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.kua-swatch {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: var(--c);
+  box-shadow: 0 0 0 1px var(--_line);
+  cursor: pointer;
+}
+.kua-swatch[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--_accent);
+}
+.kua-swatch-pick {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  background: conic-gradient(#f44, #fd4, #4d6, #4bf, #84f, #f4b, #f44);
+  box-shadow: 0 0 0 1px var(--_line);
+}
+.kua-swatch-pick::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.kua-swatch-pick::-webkit-color-swatch {
+  border: 0;
+  border-radius: 50%;
+  opacity: 0;
+}
+.kua-swatch-pick.on {
+  box-shadow: 0 0 0 2px var(--_accent);
+}
+.kua-swatch-pick.on::-webkit-color-swatch {
+  opacity: 1;
+}

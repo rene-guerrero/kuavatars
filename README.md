@@ -37,15 +37,19 @@ npm run build      # typecheck + demo build
 
 ```jsonc
 // package.json: pin a tag
-"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.2.0" }
+"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.0" }
 ```
 
 To work on an unreleased change of the avatars from inside a game, run `npm link ../kuavatars`
 (a symlink, `package.json` is untouched; the next `npm ci` restores the pinned tag).
 
-**Updating:** change kuavatars → `npm test` + check the demo → commit, `git tag v0.x.y`,
-push with tags → in each game that uses it, bump `#v0.x.y` in `package.json`, `npm install`, commit, push (the
-push rebuilds the game).
+**Updating (automatic):** each game has a `renovate.json` that watches this repo's tags. After a
+release here (`npm test`, check the demo, bump `version`, commit, `git tag vX.Y.Z`, push with tags),
+Renovate opens a pull request in every game that bumps `#vX.Y.Z`; the game's CI runs its tests on it,
+and merging it (or Renovate's automerge when green) deploys the game. Requires the free Renovate
+GitHub app on the game repositories (https://github.com/apps/renovate).
+
+Manual fallback: bump `#vX.Y.Z` in the game's `package.json`, `npm install`, commit, push.
 
 ## CSS
 
@@ -53,6 +57,7 @@ Import once, **before** the game's own stylesheet, so the game can override:
 
 ```ts
 import 'kuavatars/avatars.css';
+import 'kuavatars/editor.css'; // only if the game shows the avatar editor
 import './ui/styles.css';
 ```
 
@@ -109,6 +114,36 @@ import {
 - `CHARACTER_FACES.lola | pepe | nico | elena | andres | rosa | carlos | marta | julio | zorg`.
   Names, levels and descriptions stay in each game (with their i18n).
 - Anywhere a face is taken, a number means `HUMAN_FACES[n]`.
+
+### The avatar editor (let players make their own face)
+
+```ts
+import { createAvatarEditor, sanitizeFace } from 'kuavatars';
+
+const saved = sanitizeFace(JSON.parse(localStorage.getItem('face') ?? 'null'));
+const editor = createAvatarEditor(settingsBox, {
+  value: saved,
+  onChange: (face) => localStorage.setItem('face', JSON.stringify(face)),
+});
+```
+
+- A live preview with mood and gesture chips, "Aleatorio" / "Restablecer", and six tabs (face and
+  eyes, brows and features, mouth, hair, moustache and beard, accessories). Every option is a
+  thumbnail of the player's own face wearing it. New parts added to the library appear here by
+  themselves, so games don't change for them.
+- Options: `preview`, `moods`, `gestures`, `actions`, `alien` (all default `true`), `resetTo`, and
+  `texts` to override any text (defaults: neutral Spanish, `LABELS_ES.EDITOR_ES`).
+- Returns `{ el, value, set(face), follow(on), destroy() }`.
+- Styling: `kuavatars/editor.css`, themed with `--kua-panel`, `--kua-panel-2`, `--kua-line`,
+  `--kua-ink`, `--kua-muted`, `--kua-accent`, `--kua-accent-ink`, `--kua-stage` on any ancestor. One
+  column on narrow containers (a phone settings panel), two from 720px wide.
+
+### Checking faces from storage or other players
+
+`sanitizeFace(anything, fallback?)` returns a clean FaceSpec: it keeps known options with valid values,
+drops the rest, and falls back (default `HUMAN_FACES[0]`) when there is no valid eye colour. A number
+is a `HUMAN_FACES` index, so old saves that stored an index still load. It is pure data, so a game
+server can use it: `import { sanitizeFace } from 'kuavatars/faces'`. `sameFace(a, b)` compares two.
 
 ### Moods
 

@@ -1,6 +1,6 @@
 /** Demo: a live table with four seats and a button for every controller hook. */
 import { AvatarController, CHARACTER_FACES, GESTURES, HUMAN_FACES, MOODS, type FaceSpec, type Mood } from '../src/index';
-import { GESTURE_ES, MOOD_ES } from './labels';
+import { GESTURE_ES, MOOD_ES } from '../src/labels';
 import { button, el } from './ui';
 
 const SEATS: [number, number, string][] = [

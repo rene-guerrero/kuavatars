@@ -1,13 +1,14 @@
 {
   "name": "kuavatars",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Animated 2D SVG emoji avatars for table games",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./faces": "./src/faces.ts",
-    "./avatars.css": "./src/avatars.css"
+    "./avatars.css": "./src/avatars.css",
+    "./editor.css": "./src/editor.css"
   },
   "files": [
     "src"

@@ -19,7 +19,7 @@ import {
   type Gesture,
   type Mood,
 } from '../src/index';
-import { BEARD_ES, CHAR_ES, EYEWEAR_ES, EYE_SHAPE_ES, GESTURE_ES, HAIR_ES, HAT_ES, MOOD_ES, MOUTH_ES, SKIN_ES, STACHE_ES } from './labels';
+import { BEARD_ES, CHAR_ES, EYEWEAR_ES, EYE_SHAPE_ES, GESTURE_ES, HAIR_ES, HAT_ES, MOOD_ES, MOUTH_ES, SKIN_ES, STACHE_ES } from '../src/labels';
 import { el, faceBox } from './ui';
 
 type Look = [FaceSpec, Mood, Gesture?];

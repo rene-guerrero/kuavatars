@@ -374,13 +374,21 @@ main {
   font-weight: 700;
 }
 
-/* ── face creator ── */
+/* ── face creator: the library editor, themed with the demo's tokens ── */
 .creator {
-  display: grid;
-  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
+  --kua-panel: var(--panel);
+  --kua-panel-2: var(--panel-2);
+  --kua-line: var(--line);
+  --kua-ink: var(--ink);
+  --kua-muted: var(--muted);
+  --kua-accent: var(--accent);
+  --kua-accent-ink: var(--accent-ink);
+  --kua-stage: var(--stage);
 }
+.creator .kua-controls {
+  box-shadow: var(--shadow);
+}
+/* old creator layout (kept for reference classes used elsewhere) */
 .creator-preview {
   position: sticky;
   top: 78px;
@@ -716,9 +724,6 @@ main {
 
 /* ── narrow screens ── */
 @media (max-width: 1020px) {
-  .creator {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .creator-preview {
     position: static;
   }

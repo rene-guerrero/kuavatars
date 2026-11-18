@@ -1,4 +1,5 @@
 import '../src/avatars.css';
+import '../src/editor.css';
 import './demo.css';
 import type { AvatarQuality } from '../src/index';
 import { mountBuilder } from './builder';

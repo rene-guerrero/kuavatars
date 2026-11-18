@@ -5,6 +5,7 @@
 export { CHARACTER_FACES, FACE_COUNT, HUMAN_FACES, type CharacterId, type FaceSpec } from './faces';
 export { EYE_SHAPES, type EyeShape } from './eyes';
 export { EYEWEAR, type Eyewear } from './eyewear';
+export { sameFace, sanitizeFace } from './sanitize';
 export { GESTURES, type Gesture } from './hands';
 export { DEFAULT_LIPS, MOUTHS, type MouthStyle } from './mouths';
 export { BEARDS, HAIRS, HAIR_COLORS, HAIR_MEN, HAIR_WOMEN, HATS, HAT_COLORS, STACHES, STACHE_COLORS, type BeardStyle, type HairStyle, type HatKind, type StacheStyle } from './parts';
@@ -37,3 +38,6 @@ export {
   type Mood,
   type Point,
 } from './avatars';
+export { createAvatarEditor, type AvatarEditor, type AvatarEditorOptions } from './editor';
+export * as LABELS_ES from './labels';
+export type { EditorTexts } from './labels';

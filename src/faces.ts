@@ -99,3 +99,4 @@ export { BEARDS, HAIRS, HAIR_COLORS, HAIR_MEN, HAIR_WOMEN, HATS, HAT_COLORS, STA
 export { EYE_SHAPES, type EyeShape } from './eyes';
 export { DEFAULT_LIPS, MOUTHS, type MouthStyle } from './mouths';
 export { EYEWEAR, type Eyewear } from './eyewear';
+export { sameFace, sanitizeFace } from './sanitize';
