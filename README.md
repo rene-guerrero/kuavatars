@@ -6,6 +6,8 @@ eyewear (monocle and pirate eye patch included), freckles, Papi Zorg the alien),
 cursor, idle life (blinks, winks, glances, nodding off, sleeping with floating z's) and table-game
 reactions (hops, head shakes, startled wake-ups).
 
+**Demo:** https://rene-guerrero.github.io/kuavatars (rebuilt on every push to `main`).
+
 Framework-free TypeScript and one CSS file, no build step. Each game's Vite compiles it.
 It's built to stay cheap on weak phones: idle motion is CSS (run by the compositor), the script
 writes to the DOM only when a value changes, and the frame rate is capped per quality level.
