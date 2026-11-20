@@ -39,7 +39,7 @@ npm run build      # typecheck + demo build
 
 ```jsonc
 // package.json: pin a tag
-"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.0" }
+"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.1" }
 ```
 
 To work on an unreleased change of the avatars from inside a game, run `npm link ../kuavatars`
@@ -133,9 +133,13 @@ const editor = createAvatarEditor(settingsBox, {
   eyes, brows and features, mouth, hair, moustache and beard, accessories). Every option is a
   thumbnail of the player's own face wearing it. New parts added to the library appear here by
   themselves, so games don't change for them.
-- Options: `preview`, `moods`, `gestures`, `actions`, `alien` (all default `true`), `resetTo`, and
-  `texts` to override any text (defaults: neutral Spanish, `LABELS_ES.EDITOR_ES`).
-- Returns `{ el, value, set(face), follow(on), destroy() }`.
+- Options: `preview`, `moods`, `gestures`, `actions`, `alien`, `ambient` (all default `true`), `resetTo`,
+  and `texts` to override any text (defaults: neutral Spanish, `LABELS_ES.EDITOR_ES`).
+- `ambient`: the preview comes alive by itself: every 6–12 s a random hand gesture or a short mood,
+  never within 3 s of the player touching the editor, and not while the game sets the `reduce-motion`
+  class on `<html>`.
+- Returns `{ el, value, set(face), follow(on), gesture(g), react(mood, seconds?), destroy() }`;
+  `gesture` / `react` let the game make the preview react too.
 - Styling: `kuavatars/editor.css`, themed with `--kua-panel`, `--kua-panel-2`, `--kua-line`,
   `--kua-ink`, `--kua-muted`, `--kua-accent`, `--kua-accent-ink`, `--kua-stage` on any ancestor. One
   column on narrow containers (a phone settings panel), two from 720px wide.

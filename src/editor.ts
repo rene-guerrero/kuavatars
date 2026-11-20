@@ -12,7 +12,7 @@ import { liveFace, staticFace, MOODS, type Mood } from './avatars';
 import { EYE_SHAPES } from './eyes';
 import { EYEWEAR } from './eyewear';
 import { HUMAN_FACES, type FaceSpec } from './faces';
-import { GESTURES } from './hands';
+import { GESTURES, type Gesture } from './hands';
 import {
   BEARD_ES,
   BROW_ES,
@@ -54,6 +54,12 @@ export interface AvatarEditorOptions {
   actions?: boolean;
   /** offer the alien head (default true) */
   alien?: boolean;
+  /**
+   * the preview comes alive on its own: every 6–12 s a random hand gesture or a short mood, never
+   * while the player is editing (3 s after the last touch) and not when the game sets the reduce-motion
+   * class on <html> (default true)
+   */
+  ambient?: boolean;
   /** what "Restablecer" goes back to (default HUMAN_FACES[0]) */
   resetTo?: FaceSpec;
 }
@@ -67,7 +73,11 @@ export interface AvatarEditor {
   set(face: FaceSpec | number): void;
   /** the preview's eyes follow the cursor */
   follow(on: boolean): void;
-  /** remove it from the page */
+  /** the preview plays a hand gesture */
+  gesture(g: Gesture): void;
+  /** the preview shows a mood for a few seconds, then goes back */
+  react(mood: Mood, seconds?: number): void;
+  /** remove it from the page (and stop its timers) */
   destroy(): void;
 }
 
@@ -154,6 +164,7 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
   }
 
   const set = (patch: Partial<FaceSpec>, drop: (keyof FaceSpec)[] = []) => {
+    lastTouch = Date.now();
     const next = { ...spec, ...patch } as Record<string, unknown>;
     for (const k of drop) delete next[k];
     spec = sanitizeFace(next);
@@ -362,6 +373,36 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
     sync(true);
   }
 
+  // ── ambient life: a gesture or a short mood now and then, while the player isn't editing ──
+  const AMBIENT_MOODS: Mood[] = ['happy', 'smug', 'amazed', 'thinking', 'perk', 'meh'];
+  let lastTouch = 0;
+  let ambientTimer = 0;
+  let moodTimer = 0;
+  const touch = () => (lastTouch = Date.now());
+  root.addEventListener('pointerdown', touch, { passive: true });
+  root.addEventListener('keydown', touch);
+  // the game's own "less motion" setting (the reduce-motion class on <html>, like the rest of the library)
+  const reducedMotion = () => document.documentElement.classList.contains('reduce-motion');
+
+  function react(m: Mood, seconds = 1.8): void {
+    if (!live) return;
+    clearTimeout(moodTimer);
+    live.setExpr(m);
+    moodTimer = window.setTimeout(() => live?.setExpr(mood), seconds * 1000);
+  }
+  function scheduleAmbient(delay = 6000 + Math.random() * 6000): void {
+    clearTimeout(ambientTimer);
+    ambientTimer = window.setTimeout(() => {
+      if (!root.isConnected) return; // removed from the page: stop
+      const idle = Date.now() - lastTouch;
+      if (idle < 3000 || document.hidden || reducedMotion() || opts.preview === false) return scheduleAmbient(Math.max(3000 - idle, 0) + 2000 + Math.random() * 3000);
+      if (Math.random() < 0.55) live?.gesture(pick(GESTURES));
+      else react(pick(AMBIENT_MOODS));
+      scheduleAmbient();
+    }, delay);
+  }
+  if (opts.ambient !== false) scheduleAmbient();
+
   sync(false);
   return {
     el: root,
@@ -376,7 +417,15 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
       following = on;
       live?.follow(on);
     },
+    gesture(g) {
+      live?.gesture(g);
+    },
+    react(m, seconds) {
+      react(m, seconds);
+    },
     destroy() {
+      clearTimeout(ambientTimer);
+      clearTimeout(moodTimer);
       root.remove();
     },
   };

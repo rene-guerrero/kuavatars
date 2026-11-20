@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CHARACTER_FACES, HUMAN_FACES, createAvatarEditor, sameFace, sanitizeFace, type FaceSpec } from '../src/index';
 import { sanitizeFace as sanitizeFromFaces } from '../src/faces';
 
@@ -61,5 +61,31 @@ describe('createAvatarEditor', () => {
     expect(ed.value.hat).toBe('crown');
     ed.destroy();
     expect(box.querySelector('.kua-editor')).toBeNull();
+  });
+});
+
+describe('editor preview life', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    document.body.replaceChildren();
+  });
+
+  const hands = (ed: ReturnType<typeof createAvatarEditor>) => ed.el.querySelector('.kua-stage .hands');
+
+  it('exposes gesture() and react() for the game', () => {
+    const box = document.createElement('div');
+    document.body.append(box);
+    const ed = createAvatarEditor(box, { ambient: false });
+    expect(() => ed.react('happy', 1)).not.toThrow();
+    expect(() => ed.gesture('wave')).not.toThrow();
+  });
+
+  it('stays still with ambient: false', () => {
+    vi.useFakeTimers();
+    const box = document.createElement('div');
+    document.body.append(box);
+    const ed = createAvatarEditor(box, { ambient: false });
+    vi.advanceTimersByTime(60000);
+    expect(hands(ed)).toBeNull();
   });
 });
