@@ -2,8 +2,8 @@
 
 Animated 2D SVG "yellow emoji" avatars for table games: composable faces (any skin colour, any
 eye colour, 5 eye shapes, 7 mouths, 10 hairstyles, 7 moustaches, 7 beards, 7 hats, 7 kinds of
-eyewear (monocle and pirate eye patch included), freckles, Papi Zorg the alien), 15 moods, floating hands with 9 gestures, eyes that can follow the
-cursor, idle life (blinks, winks, glances, nodding off, sleeping with floating z's) and table-game
+eyewear (monocle and pirate eye patch included), freckles, an alien head), 15 moods, floating hands with 9 gestures, eyes that can follow the
+cursor, idle life (blinks, glances, nodding off, sleeping with floating z's) and table-game
 reactions (hops, head shakes, startled wake-ups).
 
 **Demo:** https://rene-guerrero.github.io/kuavatars (rebuilt on every push to `main`).
@@ -13,7 +13,7 @@ It's built to stay cheap on weak phones: idle motion is CSS (run by the composit
 writes to the DOM only when a value changes, and the frame rate is capped per quality level.
 
 ```
-src/faces.ts     FaceSpec, HUMAN_FACES (pickable), CHARACTER_FACES (by character id). Pure data, no DOM
+src/faces.ts     FaceSpec, HUMAN_FACES (ready-made starting faces), sanitizeFace. Pure data, no DOM
 src/colors.ts    SKIN_TONES, EYE_COLORS, and the shading derived from a colour
 src/eyes.ts      eye shapes (built from the same animated parts as the round eye)
 src/eyewear.ts   glasses, sunglasses, monocle, eye patch
@@ -39,7 +39,7 @@ npm run build      # typecheck + demo build
 
 ```jsonc
 // package.json: pin a tag
-"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.1" }
+"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.2" }
 ```
 
 To work on an unreleased change of the avatars from inside a game, run `npm link ../kuavatars`
@@ -79,10 +79,10 @@ plus `controller.setEnabled(false)`.
 ```ts
 import {
   AvatarController, staticFace, liveFace,
-  HUMAN_FACES, CHARACTER_FACES, FACE_COUNT, MOODS, humanFace,
+  HUMAN_FACES, FACE_COUNT, MOODS, humanFace,
   type FaceSpec, type Mood, type AvatarQuality,
 } from 'kuavatars';
-// pure data only (servers, engines): import { CHARACTER_FACES, type FaceSpec } from 'kuavatars/faces';
+// pure data only (servers, engines): import { sanitizeFace, type FaceSpec } from 'kuavatars/faces';
 ```
 
 ### Faces
@@ -101,8 +101,8 @@ import {
   | `hat`, `hatColor` | `HATS`: `cap` `top` `cowboy` `beanie` `straw` `crown` `party`; any colour, shading derived |
   | `brows`, `browColor` | `plain` `thick` `raised` `aviator`; brows match the hair unless `browColor` is set |
   | flags | `lashes` `freckles` `smirk` `mole` `cool` `flower` `gloves` (white gloves when gesturing) |
-  | `alien` | Papi Zorg's head (takes `iris`, `skin`, `hat`, `gloves`) |
-- **Colours:** `iris` = eye colour (on Papi Zorg, his big almond eyes); `skin` = any hex colour
+  | `alien` | the green alien head (takes `iris`, `skin`, `hat`, `gloves`) |
+- **Colours:** `iris` = eye colour (on the alien head, its big almond eyes); `skin` = any hex colour
   (default: the classic yellow, or green for the alien). The rim, glow, shine, drowsy lid, blush,
   freckles and the line colours are derived from `skin`, so any colour works; dark skins get darker
   lines and brows automatically. Faces without `skin` keep their original colours exactly.
@@ -113,8 +113,10 @@ import {
 - A player's custom face is just a FaceSpec: store it as JSON, e.g.
   `{ ...HUMAN_FACES[1], skin: SKIN_TONES.medium, iris: EYE_COLORS.hazel }`.
 - `HUMAN_FACES[0..8]`: the faces a player can pick (store the index; `humanFace(i)` clamps it)
-- `CHARACTER_FACES.lola | pepe | nico | elena | andres | rosa | carlos | marta | julio | zorg`.
-  Names, levels and descriptions stay in each game (with their i18n).
+- **CPU characters belong to each game.** The library offers the options; each game defines its own
+  characters' faces (any FaceSpec), names, levels and descriptions. `CHARACTER_FACES` (the old built-in
+  set) is **deprecated**: it stays only so older games keep working, gets no new looks, and will be
+  removed in a future version.
 - Anywhere a face is taken, a number means `HUMAN_FACES[n]`.
 
 ### The avatar editor (let players make their own face)
@@ -162,7 +164,7 @@ Tears are added to a face only the first time it cries.
 ### Static and small live faces (summaries, pickers, cards)
 
 ```ts
-box.append(staticFace(CHARACTER_FACES.zorg, 'happy'));            // an <svg>, no animation
+box.append(staticFace({ iris: '#101418', alien: true }, 'happy')); // an <svg>, no animation
 box.append(staticFace(spec, 'idle', { gesture: 'thumbsUp' }));    // a held hand pose
 const lf = liveFace(HUMAN_FACES[3], 'idle');                       // blinks, glances, bobs
 box.append(lf.el); lf.setExpr('amazed'); lf.glint();               // glint = aviator sparkle
@@ -176,7 +178,7 @@ one frame loop and drop out on their own once their element leaves the document.
 ### Seat avatars (`AvatarController`)
 
 ```ts
-const avatars = new AvatarController({ seats: 6, faces: [HUMAN_FACES[0], CHARACTER_FACES.zorg /* … */] });
+const avatars = new AvatarController({ seats: 6, faces: [playerFace, ...myCharacters.map((c) => c.face)] });
 plateAvatarBox.append(avatars.faceEl(seat));    // a positioned, sized box (the face overflows it a little)
 avatars.setPositions(faceCentres, tableCentre); // CSS px, any common origin, for glances; call on layout
 avatars.setVisible(true);                       // nothing runs until visible

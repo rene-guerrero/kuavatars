@@ -2,8 +2,9 @@
  * Faces are composable: every face is the same round head with a few features (lashes, brows, smirk,
  * freckles, glasses, aviators, moustache) — or Papi Zorg's alien head.
  *
- * HUMAN_FACES are the faces a player can pick; CHARACTER_FACES are the CPU characters' faces, keyed by
- * character id. Names, levels and descriptions of the characters live in each game, not here.
+ * The library offers the options; the games decide which faces to use. HUMAN_FACES are ready-made
+ * starting faces; each game defines its own CPU characters (any FaceSpec) with their names, levels
+ * and descriptions. CHARACTER_FACES is deprecated and only kept for older games.
  */
 
 import type { EyeShape } from './eyes';
@@ -78,7 +79,10 @@ export const HUMAN_FACES: FaceSpec[] = [
 ];
 export const FACE_COUNT = HUMAN_FACES.length;
 
-/** the CPU characters' faces, by character id */
+/**
+ * @deprecated Games define their own CPU characters' faces (any FaceSpec). This set stays only so
+ * older games keep working, and will be removed in a future version; it gets no new looks.
+ */
 export const CHARACTER_FACES = {
   lola: { iris: '#2F9B63', freckles: true, flower: true },
   pepe: { iris: '#5B3FA8', brows: 'raised', smirk: true },
@@ -91,6 +95,7 @@ export const CHARACTER_FACES = {
   julio: { iris: '#8B5A2B', glasses: true, stache: 'grey', browColor: '#9A9A92' },
   zorg: { iris: '#101418', alien: true },
 } satisfies Record<string, FaceSpec>;
+/** @deprecated see CHARACTER_FACES */
 export type CharacterId = keyof typeof CHARACTER_FACES;
 
 // colour choices (pure data too, so pickers and servers can use them without the DOM code)

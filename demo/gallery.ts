@@ -1,7 +1,6 @@
 /** Demo: gallery cards (every option of every part) and the small live faces. */
 import {
   BEARDS,
-  CHARACTER_FACES,
   EYE_COLORS,
   EYE_SHAPES,
   EYEWEAR,
@@ -19,7 +18,8 @@ import {
   type Gesture,
   type Mood,
 } from '../src/index';
-import { BEARD_ES, CHAR_ES, EYEWEAR_ES, EYE_SHAPE_ES, GESTURE_ES, HAIR_ES, HAT_ES, MOOD_ES, MOUTH_ES, SKIN_ES, STACHE_ES } from '../src/labels';
+import { BEARD_ES, EYEWEAR_ES, EYE_SHAPE_ES, GESTURE_ES, HAIR_ES, HAT_ES, MOOD_ES, MOUTH_ES, SKIN_ES, STACHE_ES } from '../src/labels';
+import { SAMPLES, sample } from './samples';
 import { el, faceBox } from './ui';
 
 type Look = [FaceSpec, Mood, Gesture?];
@@ -37,7 +37,7 @@ export const GALLERY: { id: string; title: string; lead: string; build: () => HT
   {
     id: 'ojos',
     title: 'Formas de ojos',
-    lead: 'Todas parpadean, guiñan, miran alrededor y cambian con el ánimo.',
+    lead: 'Todas parpadean, miran alrededor y cambian con el ánimo.',
     build: () => grid(...EYE_SHAPES.map((e) => tile(EYE_SHAPE_ES[e], [[{ iris: EYE_COLORS.blue, eyes: e }, 'idle'], [{ iris: EYE_COLORS.green, eyes: e, lashes: true }, 'happy'], [{ iris: EYE_COLORS.hazel, eyes: e }, 'amazed']]))),
   },
   {
@@ -101,7 +101,7 @@ export const GALLERY: { id: string; title: string; lead: string; build: () => HT
     id: 'sombreros',
     title: 'Sombreros',
     lead: 'Cada sombrero acepta cualquier color; las sombras se calculan solas.',
-    build: () => grid(...HATS.map((h) => tile(HAT_ES[h], [[{ ...HUMAN_FACES[0], hat: h }, 'happy'], [{ iris: EYE_COLORS.brown, skin: SKIN_TONES.medium, hair: 'short', hat: h }, 'idle'], [{ ...CHARACTER_FACES.zorg, hat: h }, 'happy']], 'gtile-tall'))),
+    build: () => grid(...HATS.map((h) => tile(HAT_ES[h], [[{ ...HUMAN_FACES[0], hat: h }, 'happy'], [{ iris: EYE_COLORS.brown, skin: SKIN_TONES.medium, hair: 'short', hat: h }, 'idle'], [{ ...sample('Zorg'), hat: h }, 'happy']], 'gtile-tall'))),
   },
   {
     id: 'gestos',
@@ -113,7 +113,7 @@ export const GALLERY: { id: string; title: string; lead: string; build: () => HT
     id: 'tonos',
     title: 'Tonos de piel',
     lead: 'Las sombras, el rubor y las líneas se calculan a partir del color de piel.',
-    build: () => grid(...(Object.keys(SKIN_TONES) as (keyof typeof SKIN_TONES)[]).map((k) => tile(SKIN_ES[k], [[{ ...HUMAN_FACES[0], skin: SKIN_TONES[k] }, 'happy'], [{ ...CHARACTER_FACES.carlos, skin: SKIN_TONES[k] }, 'idle'], [{ ...CHARACTER_FACES.zorg, skin: SKIN_TONES[k] }, 'idle']]))),
+    build: () => grid(...(Object.keys(SKIN_TONES) as (keyof typeof SKIN_TONES)[]).map((k) => tile(SKIN_ES[k], [[{ ...HUMAN_FACES[0], skin: SKIN_TONES[k] }, 'happy'], [{ ...sample('Tomás'), skin: SKIN_TONES[k] }, 'idle'], [{ ...sample('Zorg'), skin: SKIN_TONES[k] }, 'idle']]))),
   },
 ];
 
@@ -121,7 +121,7 @@ export const GALLERY: { id: string; title: string; lead: string; build: () => HT
 export function mountLiveFaces(root: HTMLElement, onMoodSelect: HTMLSelectElement): ReturnType<typeof liveFace>[] {
   const faces: [string, FaceSpec][] = [
     ...HUMAN_FACES.map((s, i): [string, FaceSpec] => [`Jugador ${i + 1}`, s]),
-    ...Object.entries(CHARACTER_FACES).map(([id, s]): [string, FaceSpec] => [CHAR_ES[id] ?? id, s as FaceSpec]),
+    ...SAMPLES.map((s): [string, FaceSpec] => [s.name, s.face]),
   ];
   for (const m of MOODS) onMoodSelect.append(new Option(MOOD_ES[m], m));
   const lives = faces.map(([name, spec]) => {
@@ -141,7 +141,7 @@ export function mountAllFaces(table: HTMLTableElement): void {
   const body = el('tbody');
   const faces: [string, FaceSpec][] = [
     ...HUMAN_FACES.map((s, i): [string, FaceSpec] => [`Jugador ${i + 1}`, s]),
-    ...Object.entries(CHARACTER_FACES).map(([id, s]): [string, FaceSpec] => [CHAR_ES[id] ?? id, s as FaceSpec]),
+    ...SAMPLES.map((s): [string, FaceSpec] => [s.name, s.face]),
   ];
   for (const [name, spec] of faces) {
     const tr = el('tr', '', el('th', 'sticky-col', name));

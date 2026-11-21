@@ -1,7 +1,7 @@
 /**
  * Eye shapes. Every shape is built from the same animated parts as the original round eye (white,
  * iris + pupil that follow the gaze, sliding upper lid, lash line, drowsy lid, closed and happy
- * curves), so blinks, winks, glances and moods work the same on all of them.
+ * curves), so blinks, glances and moods work the same on all of them.
  * Shapes are drawn for the right eye (outer corner at +x); the left eye is mirrored.
  */
 import type { FacePalette } from './colors';

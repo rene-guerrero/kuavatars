@@ -15,7 +15,7 @@
  *
  * Expressions are parameter vectors (brows, mouth, eyes) that the live face eases toward; motion
  * (bob, sway, hops, shakes, nods, head lean) is layered on top. A tiny scheduler adds blinks,
- * winks and glances at random intervals, and the controller maps game events to short reactions.
+ * glances at random intervals, and the controller maps game events to short reactions.
  */
 import { alienPalette, facePalette, tones } from './colors';
 import { FACE_COUNT, HUMAN_FACES, type FaceSpec } from './faces';
@@ -943,10 +943,8 @@ class Avatar {
   // blink
   blinkT0 = -1;
   blinkDur = 0.2;
-  blinkEye = 0; // 0 both, 1 left, 2 right
   blinkAgain = false;
   nextBlink = rand(1, 4);
-  nextWink = rand(18, 40);
   // gaze: current pupil target and head lean
   gazeX = 0;
   gazeY = 0;
@@ -1114,7 +1112,7 @@ class Avatar {
  *   mouth); 0 = those parts hold still
  * - pollMs: with nothing moving, the loop leaves requestAnimationFrame and only checks its schedule
  *   (next blink, glance, nod-off…) this often
- * - lazy / blinkLazy: idle micro-behaviours (glances, winks, twitches, glints / blinks) come this many
+ * - lazy / blinkLazy: idle micro-behaviours (glances, twitches, glints / blinks) come this many
  *   times less often
  * - react: reaction expressions last this fraction of their normal time
  */
@@ -1160,7 +1158,7 @@ export interface AvatarControllerOptions {
 
 /**
  * The live seat avatars of one table. Seat numbers are 0..seats-1; the game decides what a seat is.
- * Idle life (blinks, winks, glances, nodding off, sleeping) runs by itself while a turn is on; the game
+ * Idle life (blinks, glances, nodding off, sleeping) runs by itself while a turn is on; the game
  * calls the hooks below (onTurn, onPlay, onPass, onImpact, onRoundStart, onRoundEnd, onMatchEnd, react,
  * perk) to make the faces react.
  */
@@ -1538,7 +1536,6 @@ export class AvatarController {
       a.stretchT0 = t + delay;
       a.blinkT0 = t + delay + 0.35;
       a.blinkDur = 0.22;
-      a.blinkEye = 0;
       a.blinkAgain = true;
     }
   }
@@ -1761,20 +1758,11 @@ export class AvatarController {
     const cur = a.cur;
     for (let i = 0; i < P.N; i++) cur[i] = ease(cur[i], tg[i], k, EPS_F);
 
-    // blink / wink scheduler
+    // blink scheduler
     if (a.blinkT0 < 0 && t >= a.nextBlink && a.stage < 2 && a.expr !== 'happy') {
       a.blinkT0 = t;
-      a.blinkEye = 0;
       a.blinkDur = a.stage === 1 ? 0.42 : rand(0.17, 0.23);
       a.blinkAgain = a.stage === 0 && Math.random() < 0.16;
-    }
-    if (a.blinkT0 < 0 && t >= a.nextWink && a.stage === 0 && a.expr === 'idle' && !rm) {
-      a.blinkT0 = t;
-      a.blinkEye = Math.random() < 0.5 ? 1 : 2;
-      a.blinkDur = 0.5;
-      a.blinkAgain = false;
-      a.nextWink = t + rand(25, 55) * cfg.lazy;
-      a.next = { expr: 'smug', at: t, dur: 0.55 };
     }
     let b = 0;
     if (a.blinkT0 >= 0) {
@@ -1795,8 +1783,7 @@ export class AvatarController {
         }
       }
     }
-    m.blinkL = a.blinkEye === 2 ? 0 : b;
-    m.blinkR = a.blinkEye === 1 ? 0 : b;
+    m.blinkL = m.blinkR = b;
 
     // follow the pointer: it wins over idle glances while it is over the page
     if (this.follow && !rm && a.stage === 0 && pointerInside()) {

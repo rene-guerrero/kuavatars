@@ -32,7 +32,7 @@ export const MOOD_ES: Record<Mood, string> = {
   cry: 'Llorando',
 };
 
-/** display names for the character faces (the games own the real names) */
+/** @deprecated display names for CHARACTER_FACES; games name their own characters */
 export const CHAR_ES: Record<string, string> = {
   lola: 'Lola',
   pepe: 'Pepe',

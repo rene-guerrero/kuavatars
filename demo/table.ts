@@ -1,5 +1,6 @@
 /** Demo: a live table with four seats and a button for every controller hook. */
-import { AvatarController, CHARACTER_FACES, GESTURES, HUMAN_FACES, MOODS, type FaceSpec, type Mood } from '../src/index';
+import { AvatarController, GESTURES, HUMAN_FACES, MOODS, type FaceSpec, type Mood } from '../src/index';
+import { sample } from './samples';
 import { GESTURE_ES, MOOD_ES } from '../src/labels';
 import { button, el } from './ui';
 
@@ -13,9 +14,9 @@ const SEATS: [number, number, string][] = [
 export function mountTable(felt: HTMLElement, controls: HTMLElement, status: HTMLElement): AvatarController {
   const start: FaceSpec[] = [
     { ...HUMAN_FACES[0], hair: 'short' },
-    CHARACTER_FACES.carlos,
-    { ...CHARACTER_FACES.elena, hair: 'bob', hairColor: 'black' },
-    CHARACTER_FACES.zorg,
+    sample('Tomás'),
+    sample('Sofía'),
+    sample('Zorg'),
   ];
   const ctl = new AvatarController({ seats: 4, faces: start });
   const seatEls = SEATS.map(([x, y, label], s) => {
