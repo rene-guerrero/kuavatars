@@ -39,7 +39,7 @@ npm run build      # typecheck + demo build
 
 ```jsonc
 // package.json: pin a tag
-"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.3" }
+"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.4" }
 ```
 
 To work on an unreleased change of the avatars from inside a game, run `npm link ../kuavatars`

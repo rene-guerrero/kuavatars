@@ -970,6 +970,8 @@ class Avatar {
   // what was last written, so unchanged frames write nothing
   private idleState = '';
   private lastBody = new Float32Array([0, 0, 1, 1]);
+  /** the <svg> has no reaction transform (it sits at rest) */
+  private bodyRest = true;
   private lastLift = 0;
   private lastP = new Float32Array(P.N).fill(NaN);
   private lastM = new Float32Array(15).fill(NaN);
@@ -1018,6 +1020,18 @@ class Avatar {
     this.motion = restMotion();
     this.lastP.fill(NaN);
     this.lastBody.set([0, 0, 1, 1]);
+    this.bodyRest = true;
+  }
+
+  /**
+   * End the body reactions (hops, shakes, nods, stretch) and put the head back at rest at once. Runs when
+   * the controller's loop stops (paused, hidden, off, tab hidden), so a face never stays frozen mid-hop.
+   */
+  settle(): void {
+    this.hop = this.shake = this.nod = null;
+    this.stretchT0 = -10;
+    this.writeBody(0, 0, 1, 1);
+    this.writeShadow(0);
   }
 
   /** aliens rarely sleep */
@@ -1041,24 +1055,35 @@ class Avatar {
   /** reaction motion (hops, shakes, nods, lean) as one CSS transform on the <svg>; false = unchanged */
   writeBody(y: number, rot: number, sx: number, sy: number): boolean {
     const L = this.lastBody;
+    const rest = Math.abs(y) < EPS_Y && Math.abs(rot) < EPS_ROT && Math.abs(sx - 1) < EPS_S && Math.abs(sy - 1) < EPS_S;
+    // back to rest is always written (unless already there): the small-change filter below must not
+    // leave the last step of a reaction on the face
+    if (rest) {
+      if (this.bodyRest) return false;
+      this.bodyRest = true;
+      L.set([0, 0, 1, 1]);
+      this.face.svg.style.transform = '';
+      return true;
+    }
     if (Math.abs(y - L[0]) < EPS_Y && Math.abs(rot - L[1]) < EPS_ROT && Math.abs(sx - L[2]) < EPS_S && Math.abs(sy - L[3]) < EPS_S) return false;
     L[0] = y;
     L[1] = rot;
     L[2] = sx;
     L[3] = sy;
-    const rest = Math.abs(y) < EPS_Y && Math.abs(rot) < EPS_ROT && Math.abs(sx - 1) < EPS_S && Math.abs(sy - 1) < EPS_S;
+    this.bodyRest = false;
     // translate in % of the face box (viewBox 140 wide; Papi Zorg's 166)
     const u = this.face.spec.alien ? 100 / 166 : 100 / 140;
-    this.face.svg.style.transform = rest ? '' : `translate(0,${(y * u).toFixed(2)}%) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
+    this.face.svg.style.transform = `translate(0,${(y * u).toFixed(2)}%) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
     return true;
   }
 
   /** the ground shadow shrinks and fades while the head is in the air (hops only) */
   writeShadow(lift: number): void {
-    if (Math.abs(lift - this.lastLift) < 0.05) return;
+    if (lift < 0.05) lift = 0; // (so the shadow always gets back to full size)
+    if (lift === this.lastLift || (lift && Math.abs(lift - this.lastLift) < 0.05)) return;
     this.lastLift = lift;
     const st = this.shadowEl.style;
-    if (lift < 0.05) {
+    if (!lift) {
       st.transform = '';
       st.opacity = '';
       return;
@@ -1606,6 +1631,8 @@ export class AvatarController {
     // CSS idle motion pauses with the loop (pause menu, summary card, hidden)
     for (const a of this.av) a.el.classList.toggle('av-paused', !run);
     if (!run) {
+      // nothing will move these faces until the loop runs again: no head may stay mid-reaction
+      for (const a of this.av) a.settle();
       if (this.raf) cancelAnimationFrame(this.raf);
       if (this.timer) clearTimeout(this.timer);
       this.raf = this.timer = 0;
