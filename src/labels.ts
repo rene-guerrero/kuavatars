@@ -227,6 +227,8 @@ export const EDITOR_ES = {
   mood: 'Ánimo',
   gestures: 'Gestos con las manos',
   random: 'Aleatorio',
+  tabsPrev: 'Ver categorías anteriores',
+  tabsNext: 'Ver más categorías',
   reset: 'Restablecer',
   otherColor: 'Otro color',
   flags: { lashes: 'Pestañas', freckles: 'Pecas', smirk: 'Sonrisa ladeada', mole: 'Lunar', cool: 'Mirada relajada', flower: 'Flor', gloves: 'Guantes' },

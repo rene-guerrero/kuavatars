@@ -211,7 +211,31 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
     b.setAttribute('role', 'tab');
     tabBar.append(b);
   }
-  layout.append(el('div', 'kua-controls', tabBar, panel));
+  // arrows instead of a scrollbar: each scrolls the row by about a page; dimmed at its end, gone when all tabs fit
+  const arrow = (dir: -1 | 1) => {
+    const a = btn(dir < 0 ? '‹' : '›', () => {
+      const smooth = !document.documentElement.classList.contains('reduce-motion');
+      tabBar.scrollBy({ left: dir * Math.max(80, tabBar.clientWidth * 0.8), behavior: smooth ? 'smooth' : 'auto' });
+    }, `kua-tabs-arrow kua-tabs-${dir < 0 ? 'prev' : 'next'}`);
+    a.setAttribute('aria-label', dir < 0 ? T.tabsPrev : T.tabsNext);
+    a.tabIndex = -1; // keyboard users reach every tab with Tab already
+    a.hidden = true;
+    return a;
+  };
+  const prev = arrow(-1);
+  const next = arrow(1);
+  const updateArrows = () => {
+    // the arrows show only when the tabs don't fit the whole row (their own width counted back in)
+    const row = tabBar.clientWidth + (prev.hidden ? 0 : prev.offsetWidth + next.offsetWidth);
+    prev.hidden = next.hidden = tabBar.scrollWidth <= row + 1;
+    const max = tabBar.scrollWidth - tabBar.clientWidth;
+    prev.disabled = tabBar.scrollLeft <= 1;
+    next.disabled = tabBar.scrollLeft >= max - 1;
+  };
+  tabBar.addEventListener('scroll', updateArrows, { passive: true }); // browsers already send these once a frame
+  const tabsResize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateArrows);
+  tabsResize?.observe(tabBar);
+  layout.append(el('div', 'kua-controls', el('div', 'kua-tabrow', prev, tabBar, next), panel));
   container.append(root);
 
   const note = (t: string) => el('p', 'kua-note', t);
@@ -329,8 +353,19 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
   const PANELS: Record<Tab, () => Node[]> = { cara: panelCara, rasgos: panelRasgos, boca: panelBoca, pelo: panelPelo, vello: panelVello, accesorios: panelAccesorios };
 
   function render(): void {
-    for (const b of tabBar.children) b.setAttribute('aria-selected', String((b as HTMLElement).dataset.tab === tab));
+    for (const b of tabBar.children) {
+      const on = (b as HTMLElement).dataset.tab === tab;
+      b.setAttribute('aria-selected', String(on));
+      // keep the chosen tab in view (the arrows may have scrolled it away)
+      if (on) {
+        const r = b.getBoundingClientRect();
+        const bar = tabBar.getBoundingClientRect();
+        if (r.left < bar.left) tabBar.scrollLeft += r.left - bar.left - 8;
+        else if (r.right > bar.right) tabBar.scrollLeft += r.right - bar.right + 8;
+      }
+    }
     panel.replaceChildren(...PANELS[tab]());
+    updateArrows();
   }
 
   function sync(changed: boolean): void {
@@ -426,6 +461,7 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
     destroy() {
       clearTimeout(ambientTimer);
       clearTimeout(moodTimer);
+      tabsResize?.disconnect();
       root.remove();
     },
   };

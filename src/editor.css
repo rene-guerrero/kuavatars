@@ -147,13 +147,50 @@
   background: var(--_panel);
   overflow: hidden;
 }
+.kua-tabrow {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--_line);
+}
 .kua-tabs {
+  flex: 1;
+  min-width: 0;
   display: flex;
   gap: 2px;
   padding: 8px 8px 0;
-  border-bottom: 1px solid var(--_line);
   overflow-x: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.kua-tabs::-webkit-scrollbar {
+  display: none;
+}
+/* arrows beside the row (they take its place when it overflows; dimmed at each end) */
+.kua-tabs-arrow {
+  flex: none;
+  width: 40px;
+  min-height: 44px;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--_ink);
+  font: inherit;
+  font-size: 1.7em;
+  font-weight: 800;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+.kua-tabs-arrow[hidden] {
+  display: none;
+}
+.kua-tabs-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.kua-tabs-arrow:not(:disabled):active {
+  color: var(--_accent);
 }
 .kua-tab {
   flex: none;
