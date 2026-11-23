@@ -40,4 +40,6 @@ export {
 } from './avatars';
 export { createAvatarEditor, type AvatarEditor, type AvatarEditorOptions } from './editor';
 export * as LABELS_ES from './labels';
+export * as LABELS_EN from './labels-en';
+export { LABELS, LANGS, labelsFor, type Labels, type Lang } from './i18n';
 export type { EditorTexts } from './labels';

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-quality="high">
+<html lang="en" data-quality="high">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,7 +10,7 @@
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#crear" aria-label="KuAvatars, inicio">
+      <a class="brand" href="#crear" aria-label="KuAvatars, home" data-es-label="KuAvatars, inicio">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-name">Ku<b>Avatars</b></span>
       </a>
@@ -18,37 +18,37 @@
     </header>
 
     <div class="layout">
-      <nav class="nav" aria-label="Secciones">
-        <span class="nav-title">Probar</span>
-        <a href="#crear">Crear una cara</a>
-        <a href="#mesa">Mesa en vivo</a>
-        <a href="#vivas">Caras pequeñas</a>
-        <span class="nav-title">Galería</span>
-        <a href="#ojos">Ojos</a>
-        <a href="#gafas">Gafas</a>
-        <a href="#bocas">Bocas</a>
-        <a href="#peinados">Peinados</a>
-        <a href="#bigotes">Bigotes</a>
-        <a href="#barbas">Barbas</a>
-        <a href="#sombreros">Sombreros</a>
-        <a href="#gestos">Gestos</a>
-        <a href="#tonos">Tonos de piel</a>
-        <a href="#todas">Todas las caras</a>
+      <nav class="nav" aria-label="Sections" data-es-label="Secciones">
+        <span class="nav-title" data-es="Probar">Try it</span>
+        <a href="#crear" data-es="Crear una cara">Make a face</a>
+        <a href="#mesa" data-es="Mesa en vivo">Live table</a>
+        <a href="#vivas" data-es="Caras pequeñas">Small faces</a>
+        <span class="nav-title" data-es="Galería">Gallery</span>
+        <a href="#ojos" data-es="Ojos">Eyes</a>
+        <a href="#gafas" data-es="Gafas">Glasses</a>
+        <a href="#bocas" data-es="Bocas">Mouths</a>
+        <a href="#peinados" data-es="Peinados">Hairstyles</a>
+        <a href="#bigotes" data-es="Bigotes">Mustaches</a>
+        <a href="#barbas" data-es="Barbas">Beards</a>
+        <a href="#sombreros" data-es="Sombreros">Hats</a>
+        <a href="#gestos" data-es="Gestos">Gestures</a>
+        <a href="#tonos" data-es="Tonos de piel">Skin tones</a>
+        <a href="#todas" data-es="Todas las caras">All faces</a>
       </nav>
 
       <main>
         <section class="block" id="crear">
           <header class="block-head">
-            <h1>Crea una cara</h1>
-            <p class="lead">Elige piel, ojos, boca, pelo y accesorios. Cada opción muestra tu cara con ese cambio. El resultado es un FaceSpec que cualquier juego puede guardar.</p>
+            <h1 data-es="Crea una cara">Make a face</h1>
+            <p class="lead" data-es="Elige piel, ojos, boca, pelo y accesorios. Cada opción muestra tu cara con ese cambio. El resultado es un FaceSpec que cualquier juego puede guardar.">Pick the skin, eyes, mouth, hair and accessories. Every option shows your face with that change. The result is a FaceSpec any game can save.</p>
           </header>
           <div class="creator" id="creator"></div>
         </section>
 
         <section class="block" id="mesa">
           <header class="block-head">
-            <h2>Mesa en vivo</h2>
-            <p class="lead">El controlador de asientos: turnos, jugadas, rondas y gestos. Si nadie juega, los que esperan se duermen; un golpe fuerte los despierta.</p>
+            <h2 data-es="Mesa en vivo">Live table</h2>
+            <p class="lead" data-es="El controlador de asientos: turnos, jugadas, rondas y gestos. Si nadie juega, los que esperan se duermen; un golpe fuerte los despierta.">The seat controller: turns, plays, rounds and gestures. When nobody plays, the players who are waiting doze off; a hard slam wakes them up.</p>
           </header>
           <div class="table-wrap card">
             <div class="felt" id="felt"></div>
@@ -61,9 +61,9 @@
 
         <section class="block" id="vivas">
           <header class="block-head">
-            <h2>Caras pequeñas</h2>
-            <p class="lead">Para tarjetas y selectores: parpadean, miran alrededor y se balancean con un solo bucle compartido.</p>
-            <label class="inline-field">Ánimo <select class="select" id="live-mood"></select></label>
+            <h2 data-es="Caras pequeñas">Small faces</h2>
+            <p class="lead" data-es="Para tarjetas y selectores: parpadean, miran alrededor y se balancean con un solo bucle compartido.">For cards and pickers: they blink, look around and sway, all on one shared loop.</p>
+            <label class="inline-field"><span data-es="Ánimo">Mood</span> <select class="select" id="live-mood"></select></label>
           </header>
           <div class="ltiles card" id="live"></div>
         </section>
@@ -72,8 +72,8 @@
 
         <section class="block" id="todas">
           <header class="block-head">
-            <h2>Todas las caras y ánimos</h2>
-            <p class="lead">Las caras incluidas, en cada uno de los trece ánimos.</p>
+            <h2 data-es="Todas las caras y ánimos">Every face in every mood</h2>
+            <p class="lead" data-es="Las caras de ejemplo, en cada ánimo.">The sample faces, in every mood.</p>
           </header>
           <div class="table-scroll card"><table class="all-faces" id="all-faces"></table></div>
         </section>

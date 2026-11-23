@@ -1,5 +1,6 @@
 /** Small DOM helpers for the demo. */
 import { staticFace, type FaceSpec, type Mood } from '../src/index';
+import { t } from './i18n';
 
 type Kids = (Node | string | null | false | undefined)[];
 
@@ -78,8 +79,8 @@ export function swatches(id: string, colors: [string, string][], onPick: (hex: s
   const pick = el('input', 'swatch-pick');
   pick.type = 'color';
   pick.id = `${id}-pick`;
-  pick.title = 'Otro color';
-  pick.setAttribute('aria-label', 'Otro color');
+  pick.title = t('Otro color', 'Other color');
+  pick.setAttribute('aria-label', pick.title);
   pick.oninput = () => onPick(pick.value.toUpperCase());
   row.append(pick);
   return {

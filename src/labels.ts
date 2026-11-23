@@ -1,4 +1,4 @@
-/** Every text the demo shows, in neutral Spanish. */
+/** The library's Spanish labels (neutral Spanish). English: labels-en.ts; both: LABELS in i18n.ts. */
 import type {
   BeardStyle,
   Eyewear,

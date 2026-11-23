@@ -1,12 +1,14 @@
 # KuAvatars
 
-Animated 2D SVG "yellow emoji" avatars for table games: composable faces (any skin colour, any
-eye colour, 5 eye shapes, 7 mouths, 10 hairstyles, 7 moustaches, 7 beards, 7 hats, 7 kinds of
-eyewear (monocle and pirate eye patch included), freckles, an alien head), 15 moods, floating hands with 9 gestures, eyes that can follow the
-cursor, idle life (blinks, glances, nodding off, sleeping with floating z's) and table-game
-reactions (hops, head shakes, startled wake-ups).
+Animated 2D SVG "yellow emoji" avatars for table games: composable faces (any skin color, any eye
+color, 5 eye shapes, 7 mouths, 10 hairstyles, 7 mustaches, 7 beards, 7 hats, 7 kinds of eyewear,
+monocle and pirate eye patch included, freckles, an alien head), 15 moods, floating hands with 9
+gestures, eyes that can follow the cursor, idle life (blinks, glances, nodding off, sleeping with
+floating z's) and table-game reactions (hops, head shakes, startled wake-ups). Every label comes in
+English and Spanish.
 
-**Demo:** https://rene-guerrero.github.io/kuavatars (rebuilt on every push to `main`).
+**Demo:** https://rene-guerrero.github.io/kuavatars (rebuilt on every push to `main`). It opens in
+Spanish when the browser prefers Spanish and in English otherwise; the language switch is remembered.
 
 Framework-free TypeScript and one CSS file, no build step. Each game's Vite compiles it.
 It's built to stay cheap on weak phones: idle motion is CSS (run by the compositor), the script
@@ -14,16 +16,18 @@ writes to the DOM only when a value changes, and the frame rate is capped per qu
 
 ```
 src/faces.ts     FaceSpec, HUMAN_FACES (ready-made starting faces), sanitizeFace. Pure data, no DOM
-src/colors.ts    SKIN_TONES, EYE_COLORS, and the shading derived from a colour
+src/colors.ts    SKIN_TONES, EYE_COLORS, and the shading derived from a color
 src/eyes.ts      eye shapes (built from the same animated parts as the round eye)
 src/eyewear.ts   glasses, sunglasses, monocle, eye patch
 src/mouths.ts    mouth styles (dress the same animated mouth)
-src/parts.ts     hats, moustaches, beards, hairstyles
+src/parts.ts     hats, mustaches, beards, hairstyles
 src/hands.ts     floating hands: shapes and gesture poses
 src/pointer.ts   shared pointer tracking for follow-the-cursor eyes
 src/avatars.ts   the face (SVG + writers), moods, staticFace, liveFace, AvatarController
+src/editor.ts    createAvatarEditor (styled by src/editor.css)
+src/labels.ts    Spanish labels · src/labels-en.ts English labels · src/i18n.ts LABELS[lang]
 src/avatars.css  .av-face / .av-idle / .av-shadow / .av-zzz / .face-static and their keyframes
-demo/            face creator, live table, small live faces, a gallery of every part, every face × mood
+demo/            face editor, live table, small live faces, a gallery of every part, every face × mood
 test/            vitest + happy-dom; markup.test.ts snapshots every built-in face (update with -u when a
                  visual change is intended)
 ```
@@ -39,7 +43,7 @@ npm run build      # typecheck + demo build
 
 ```jsonc
 // package.json: pin a tag
-"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.4" }
+"dependencies": { "kuavatars": "github:rene-guerrero/kuavatars#v0.3.5" }
 ```
 
 To work on an unreleased change of the avatars from inside a game, run `npm link ../kuavatars`
@@ -91,24 +95,24 @@ import {
 
   | Field | Values |
   | --- | --- |
-  | `iris`, `skin` | any hex colour (see below) |
+  | `iris`, `skin` | any hex color (see below) |
   | `eyes` | `EYE_SHAPES`: `round` (default) `big` `almond` `cat` `button` |
   | `mouth`, `lipColor` | `MOUTHS`: `smile` (default) `lips` `teeth` `buck` `fangs` `thin` `wide`; `lipColor` for `lips` |
-  | `hair`, `hairColor` | `HAIR_MEN`: `short` `sidePart` `spiky` `curly` `pompadour` · `HAIR_WOMEN`: `long` `bob` `ponytail` `bun` `pigtails`; colour = a `HAIR_COLORS` key or hex |
-  | `stache`, `stacheStyle` | `stache` = colour (a `STACHE_COLORS` key or hex); `STACHES`: `handlebar` (default) `chevron` `pencil` `walrus` `horseshoe` `imperial` `fuManchu`. Thin ones leave the mouth visible |
-  | `beard`, `beardColor` | `BEARDS`: `full` `goatee` `vandyke` `chinstrap` `mutton` `stubble` `long`; colour defaults to the moustache's |
+  | `hair`, `hairColor` | `HAIR_MEN`: `short` `sidePart` `spiky` `curly` `pompadour` · `HAIR_WOMEN`: `long` `bob` `ponytail` `bun` `pigtails`; color = a `HAIR_COLORS` key or hex |
+  | `stache`, `stacheStyle` | `stache` = color (a `STACHE_COLORS` key or hex); `STACHES`: `handlebar` (default) `chevron` `pencil` `walrus` `horseshoe` `imperial` `fuManchu`. Thin ones leave the mouth visible |
+  | `beard`, `beardColor` | `BEARDS`: `full` `goatee` `vandyke` `chinstrap` `mutton` `stubble` `long`; color defaults to the mustache's |
   | `eyewear` | `EYEWEAR`: `round` `square` `aviators` `sunglasses` `catEye` `monocle` `eyepatch`. Sunglasses and aviators slide down the nose when amazed. The older `glasses: true` / `aviators: true` flags still work |
-  | `hat`, `hatColor` | `HATS`: `cap` `top` `cowboy` `beanie` `straw` `crown` `party`; any colour, shading derived |
+  | `hat`, `hatColor` | `HATS`: `cap` `top` `cowboy` `beanie` `straw` `crown` `party`; any color, shading derived |
   | `brows`, `browColor` | `plain` `thick` `raised` `aviator`; brows match the hair unless `browColor` is set |
   | flags | `lashes` `freckles` `smirk` `mole` `cool` `flower` `gloves` (white gloves when gesturing) |
   | `alien` | the green alien head (takes `iris`, `skin`, `hat`, `gloves`) |
-- **Colours:** `iris` = eye colour (on the alien head, its big almond eyes); `skin` = any hex colour
+- **Colors:** `iris` = eye color (on the alien head, its big almond eyes); `skin` = any hex color
   (default: the classic yellow, or green for the alien). The rim, glow, shine, drowsy lid, blush,
-  freckles and the line colours are derived from `skin`, so any colour works; dark skins get darker
-  lines and brows automatically. Faces without `skin` keep their original colours exactly.
+  freckles and the line colors are derived from `skin`, so any color works; dark skins get darker
+  lines and brows automatically. Faces without `skin` keep their original colors exactly.
 - `SKIN_TONES` (`yellow light mediumLight medium mediumDark dark green blue pink purple orange`) and
   `EYE_COLORS` (`blue green brown hazel amber grey teal violet dark`): ready-made swatches for pickers
-  (also in `kuavatars/faces`). `facePalette(spec)` / `alienPalette(spec)` give the derived colours,
+  (also in `kuavatars/faces`). `facePalette(spec)` / `alienPalette(spec)` give the derived colors,
   for example to tint a plate ring to match.
 - A player's custom face is just a FaceSpec: store it as JSON, e.g.
   `{ ...HUMAN_FACES[1], skin: SKIN_TONES.medium, iris: EYE_COLORS.hazel }`.
@@ -126,17 +130,19 @@ import { createAvatarEditor, sanitizeFace } from 'kuavatars';
 
 const saved = sanitizeFace(JSON.parse(localStorage.getItem('face') ?? 'null'));
 const editor = createAvatarEditor(settingsBox, {
+  lang: 'en', // or 'es' (the default)
   value: saved,
   onChange: (face) => localStorage.setItem('face', JSON.stringify(face)),
 });
 ```
 
-- A live preview with mood and gesture chips, "Aleatorio" / "Restablecer", and six tabs (face and
-  eyes, brows and features, mouth, hair, moustache and beard, accessories). Every option is a
-  thumbnail of the player's own face wearing it. New parts added to the library appear here by
+- A live preview with mood and gesture chips, Random / Reset buttons, and six tabs (face and eyes,
+  brows and features, mouth, hair, facial hair, accessories). Every option is a thumbnail of the
+  player's own face wearing it. New parts added to the library appear here by
   themselves, so games don't change for them.
-- Options: `preview`, `moods`, `gestures`, `actions`, `alien`, `ambient` (all default `true`), `resetTo`,
-  and `texts` to override any text (defaults: neutral Spanish, `LABELS_ES.EDITOR_ES`).
+- Options: `lang` (`'es'` default, or `'en'`: every text and option name), `preview`, `moods`,
+  `gestures`, `actions`, `alien`, `ambient` (all default `true`), `resetTo`, and `texts` to override
+  single texts on top of `lang`.
 - `ambient`: the preview comes alive by itself: every 6–12 s a random hand gesture or a short mood,
   never within 3 s of the player touching the editor, and not while the game sets the `reduce-motion`
   class on `<html>`.
@@ -146,10 +152,19 @@ const editor = createAvatarEditor(settingsBox, {
   `--kua-ink`, `--kua-muted`, `--kua-accent`, `--kua-accent-ink`, `--kua-stage` on any ancestor. One
   column on narrow containers (a phone settings panel), two from 720px wide.
 
+### Languages
+
+The library never guesses the language; the game passes it. `createAvatarEditor` takes `lang`, and a
+game's own pickers can read the same names from `LABELS[lang]` (or `labelsFor(lang)`, which falls
+back to Spanish): `mood`, `skin`, `eyeColor`, `eyeShape`, `mouth`, `hair`, `hairColor`, `stache`,
+`stacheColor`, `beard`, `hat`, `gesture`, `eyewear`, `brows` and `editor`, each keyed like the
+library's ids (`LABELS.en.hat.top === 'Top hat'`). `LANGS` lists the languages, and the single tables
+are also exported as `LABELS_ES` / `LABELS_EN`. English uses US spelling; Spanish is neutral, no slang.
+
 ### Checking faces from storage or other players
 
 `sanitizeFace(anything, fallback?)` returns a clean FaceSpec: it keeps known options with valid values,
-drops the rest, and falls back (default `HUMAN_FACES[0]`) when there is no valid eye colour. A number
+drops the rest, and falls back (default `HUMAN_FACES[0]`) when there is no valid eye color. A number
 is a `HUMAN_FACES` index, so old saves that stored an index still load. It is pure data, so a game
 server can use it: `import { sanitizeFace } from 'kuavatars/faces'`. `sameFace(a, b)` compares two.
 
@@ -219,8 +234,8 @@ Seat 0 is the local human: on its turn the face peeks down at the hand instead o
 
 Hooks are ignored while `setQuiet(true)`.
 
-The demo's **Crea una cara** panel builds a FaceSpec (skin, eyes, features) and shows it live, in every
-mood, and as JSON to copy into a game.
+The demo's **Make a face** section is the avatar editor, with the resulting FaceSpec as JSON to copy
+into a game.
 
 ### Example: a card game adapter
 
@@ -246,8 +261,10 @@ test), tag a release, and bump the games that use it.
 
 ## Size
 
-Built into a game (esbuild, minified): **81 KB JS, 29 KB gzipped**, plus 2.8 KB CSS (1 KB gzipped).
-v0.1.0 was 34 KB (13 KB gzipped); the new parts are mostly SVG path data. Hands, hats, hair and
+Everything, editor and both languages included (esbuild, minified): **100 KB JS, 37 KB gzipped**,
+plus 2.8 KB CSS for the faces and 4.6 KB for the editor (1 KB and 1.4 KB gzipped). A game that doesn't
+import the editor drops it when tree-shaking. v0.1.0 was 34 KB (13 KB gzipped); the new parts are
+mostly SVG path data. Hands, hats, hair and
 the other parts add nothing to the DOM unless a face uses them.
 
 ## Dev measurement

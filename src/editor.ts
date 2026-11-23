@@ -3,7 +3,7 @@
  * player's own face wearing it. Framework-free; styled by `kuavatars/editor.css` through CSS
  * variables, and it fits any width (it stacks on narrow containers).
  *
- *   const ed = createAvatarEditor(box, { value: saved, onChange: (face) => save(face) });
+ *   const ed = createAvatarEditor(box, { lang: 'en', value: saved, onChange: (face) => save(face) });
  *
  * New parts added to the library show up here by themselves, so games never change for them.
  */
@@ -13,26 +13,8 @@ import { EYE_SHAPES } from './eyes';
 import { EYEWEAR } from './eyewear';
 import { HUMAN_FACES, type FaceSpec } from './faces';
 import { GESTURES, type Gesture } from './hands';
-import {
-  BEARD_ES,
-  BROW_ES,
-  EDITOR_ES,
-  EYEWEAR_ES,
-  EYE_ES,
-  EYE_SHAPE_ES,
-  GESTURE_ES,
-  HAIR_COLOR_ES,
-  HAIR_ES,
-  HAT_ES,
-  HAT_SWATCHES,
-  LIP_SWATCHES,
-  MOOD_ES,
-  MOUTH_ES,
-  SKIN_ES,
-  STACHE_COLOR_ES,
-  STACHE_ES,
-  type EditorTexts,
-} from './labels';
+import { labelsFor, type Lang } from './i18n';
+import { HAT_SWATCHES, LIP_SWATCHES, type EditorTexts } from './labels';
 import { DEFAULT_LIPS, MOUTHS } from './mouths';
 import { BEARDS, HAIR_COLORS, HAIR_MEN, HAIR_WOMEN, HATS, HAT_COLORS, STACHES, STACHE_COLORS } from './parts';
 import { sanitizeFace } from './sanitize';
@@ -42,7 +24,9 @@ export interface AvatarEditorOptions {
   value?: FaceSpec | number;
   /** called with a fresh FaceSpec on every change */
   onChange?(face: FaceSpec): void;
-  /** override any of the editor's texts (default: neutral Spanish) */
+  /** the language of every text and option name: 'es' (default, neutral Spanish) or 'en' */
+  lang?: Lang;
+  /** override any of the editor's texts (on top of `lang`) */
   texts?: Partial<EditorTexts>;
   /** show the big live preview (default true) */
   preview?: boolean;
@@ -50,7 +34,7 @@ export interface AvatarEditorOptions {
   moods?: boolean;
   /** hand-gesture chips under the preview (default true) */
   gestures?: boolean;
-  /** the "Aleatorio" / "Restablecer" buttons (default true) */
+  /** the Random / Reset buttons (default true) */
   actions?: boolean;
   /** offer the alien head (default true) */
   alien?: boolean;
@@ -60,7 +44,7 @@ export interface AvatarEditorOptions {
    * class on <html> (default true)
    */
   ambient?: boolean;
-  /** what "Restablecer" goes back to (default HUMAN_FACES[0]) */
+  /** what Reset goes back to (default HUMAN_FACES[0]) */
   resetTo?: FaceSpec;
 }
 
@@ -112,7 +96,9 @@ const colorOf = (table: Record<string, string>, v: string | undefined, fallback:
 const entries = (table: Record<string, string>, labels: Record<string, string>): [string, string][] => Object.entries(table).map(([k, c]) => [c, labels[k] ?? k]);
 
 export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOptions = {}): AvatarEditor {
-  const T: EditorTexts = { ...EDITOR_ES, ...opts.texts, tabs: { ...EDITOR_ES.tabs, ...opts.texts?.tabs }, flags: { ...EDITOR_ES.flags, ...opts.texts?.flags } };
+  const L = labelsFor(opts.lang);
+  const base = L.editor;
+  const T: EditorTexts = { ...base, ...opts.texts, tabs: { ...base.tabs, ...opts.texts?.tabs }, flags: { ...base.flags, ...opts.texts?.flags } };
   const resetTo = opts.resetTo ?? HUMAN_FACES[0];
   const allowAlien = opts.alien !== false;
   let spec: FaceSpec = sanitizeFace(opts.value ?? resetTo);
@@ -181,7 +167,7 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
     const row = el('div', 'kua-chips');
     for (const m of MOODS) {
       const b = btn(
-        MOOD_ES[m],
+        L.mood[m],
         () => {
           mood = m;
           live?.setExpr(m);
@@ -196,7 +182,7 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
   }
   if (opts.gestures !== false) {
     const row = el('div', 'kua-chips');
-    for (const g of GESTURES) row.append(btn(GESTURE_ES[g], () => live?.gesture(g), 'kua-chip kua-chip-ghost'));
+    for (const g of GESTURES) row.append(btn(L.gesture[g], () => live?.gesture(g), 'kua-chip kua-chip-ghost'));
     side.append(el('div', 'kua-mini-title', T.gestures), row);
   }
   if (opts.preview !== false) layout.append(side);
@@ -256,13 +242,13 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
           ),
         ),
       );
-    out.push(field(T.skin, swatches(entries(SKIN_TONES, SKIN_ES), spec.skin ?? (alien ? DEFAULT_ALIEN_SKIN : DEFAULT_SKIN), (hex) => set({ skin: hex }))));
-    out.push(field(T.eyeColor, swatches(entries(EYE_COLORS, EYE_ES), spec.iris, (hex) => set({ iris: hex }))));
+    out.push(field(T.skin, swatches(entries(SKIN_TONES, L.skin), spec.skin ?? (alien ? DEFAULT_ALIEN_SKIN : DEFAULT_SKIN), (hex) => set({ skin: hex }))));
+    out.push(field(T.eyeColor, swatches(entries(EYE_COLORS, L.eyeColor), spec.iris, (hex) => set({ iris: hex }))));
     if (!alien)
       out.push(
         field(
           T.eyeShape,
-          tiles(EYE_SHAPES, (v) => EYE_SHAPE_ES[v], (v) => ({ ...spec, eyes: v === 'round' ? undefined : v }), spec.eyes ?? 'round', (v) => (v === 'round' ? set({}, ['eyes']) : set({ eyes: v }))),
+          tiles(EYE_SHAPES, (v) => L.eyeShape[v], (v) => ({ ...spec, eyes: v === 'round' ? undefined : v }), spec.eyes ?? 'round', (v) => (v === 'round' ? set({}, ['eyes']) : set({ eyes: v }))),
         ),
       );
     return out;
@@ -270,7 +256,7 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
 
   function panelRasgos(): Node[] {
     if (spec.alien) return [note(T.alienNoBrows)];
-    const browKeys = Object.keys(BROW_ES) as (keyof typeof BROW_ES)[];
+    const browKeys = Object.keys(L.brows) as (keyof typeof L.brows)[];
     const flags = el('div', 'kua-chips');
     for (const k of ['lashes', 'freckles', 'smirk', 'mole', 'cool'] as Flag[]) {
       const b = btn(T.flags[k], () => (spec[k] ? set({}, [k]) : set({ [k]: true })), 'kua-chip');
@@ -278,8 +264,8 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
       flags.append(b);
     }
     return [
-      field(T.brows, tiles(browKeys, (v) => BROW_ES[v], (v) => ({ ...spec, brows: v === 'plain' ? undefined : v }), spec.brows ?? 'plain', (v) => (v === 'plain' ? set({}, ['brows']) : set({ brows: v })))),
-      field(T.browColor, swatches(entries(STACHE_COLORS, STACHE_COLOR_ES), spec.browColor ?? facePalette(spec).brow, (hex) => set({ browColor: hex })), btn(T.browLikeHair, () => set({}, ['browColor']), 'kua-btn kua-btn-small')),
+      field(T.brows, tiles(browKeys, (v) => L.brows[v], (v) => ({ ...spec, brows: v === 'plain' ? undefined : v }), spec.brows ?? 'plain', (v) => (v === 'plain' ? set({}, ['brows']) : set({ brows: v })))),
+      field(T.browColor, swatches(entries(STACHE_COLORS, L.stacheColor), spec.browColor ?? facePalette(spec).brow, (hex) => set({ browColor: hex })), btn(T.browLikeHair, () => set({}, ['browColor']), 'kua-btn kua-btn-small')),
       field(T.features, flags),
     ];
   }
@@ -287,7 +273,7 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
   function panelBoca(): Node[] {
     if (spec.alien) return [note(T.alienOwnMouth)];
     const out: Node[] = [
-      field(T.mouth, tiles(MOUTHS, (v) => MOUTH_ES[v], (v) => ({ ...spec, mouth: v === 'smile' ? undefined : v, stache: undefined, beard: undefined }), spec.mouth ?? 'smile', (v) => (v === 'smile' ? set({}, ['mouth', 'lipColor']) : set({ mouth: v }, v === 'lips' ? [] : ['lipColor'])), 'happy')),
+      field(T.mouth, tiles(MOUTHS, (v) => L.mouth[v], (v) => ({ ...spec, mouth: v === 'smile' ? undefined : v, stache: undefined, beard: undefined }), spec.mouth ?? 'smile', (v) => (v === 'smile' ? set({}, ['mouth', 'lipColor']) : set({ mouth: v }, v === 'lips' ? [] : ['lipColor'])), 'happy')),
     ];
     if (spec.mouth === 'lips') out.push(field(T.lipColor, swatches(LIP_SWATCHES.map((c) => [c, c]), spec.lipColor ?? DEFAULT_LIPS, (hex) => set({ lipColor: hex }))));
     return out;
@@ -298,9 +284,9 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
     const prev = (v: string): FaceSpec => ({ ...spec, hair: (v || undefined) as FaceSpec['hair'], hat: undefined });
     const choose = (v: string) => (v ? set({ hair: v as FaceSpec['hair'] }) : set({}, ['hair', 'hairColor']));
     return [
-      field(T.hairMen, tiles(['', ...HAIR_MEN], (v) => (v ? HAIR_ES[v as keyof typeof HAIR_ES] : T.noHair), prev, spec.hair ?? '', choose)),
-      field(T.hairWomen, tiles<string>(HAIR_WOMEN, (v) => HAIR_ES[v as keyof typeof HAIR_ES], prev, spec.hair ?? '', choose)),
-      field(T.hairColor, swatches(entries(HAIR_COLORS, HAIR_COLOR_ES), colorOf(HAIR_COLORS, spec.hairColor, HAIR_COLORS.brown), (hex) => set({ hairColor: keyOf(HAIR_COLORS, hex) ?? hex, hair: spec.hair ?? 'short' }))),
+      field(T.hairMen, tiles(['', ...HAIR_MEN], (v) => (v ? L.hair[v as keyof typeof L.hair] : T.noHair), prev, spec.hair ?? '', choose)),
+      field(T.hairWomen, tiles<string>(HAIR_WOMEN, (v) => L.hair[v as keyof typeof L.hair], prev, spec.hair ?? '', choose)),
+      field(T.hairColor, swatches(entries(HAIR_COLORS, L.hairColor), colorOf(HAIR_COLORS, spec.hairColor, HAIR_COLORS.brown), (hex) => set({ hairColor: keyOf(HAIR_COLORS, hex) ?? hex, hair: spec.hair ?? 'short' }))),
     ];
   }
 
@@ -311,16 +297,16 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
         T.stache,
         tiles(
           ['', ...STACHES],
-          (v) => (v ? STACHE_ES[v] : T.noStache),
+          (v) => (v ? L.stache[v] : T.noStache),
           (v) => ({ ...spec, stache: v ? (spec.stache ?? 'brown') : undefined, stacheStyle: v && v !== 'handlebar' ? v : undefined, hat: undefined }),
           spec.stache ? (spec.stacheStyle ?? 'handlebar') : '',
           (v) => (v ? set({ stache: spec.stache ?? 'brown', stacheStyle: v === 'handlebar' ? undefined : v }, v === 'handlebar' ? ['stacheStyle'] : []) : set({}, ['stache', 'stacheStyle'])),
         ),
       ),
     ];
-    if (spec.stache) out.push(field(T.stacheColor, swatches(entries(STACHE_COLORS, STACHE_COLOR_ES), colorOf(STACHE_COLORS, spec.stache, STACHE_COLORS.brown), (hex) => set({ stache: keyOf(STACHE_COLORS, hex) ?? hex }))));
-    out.push(field(T.beard, tiles(['', ...BEARDS], (v) => (v ? BEARD_ES[v] : T.noBeard), (v) => ({ ...spec, beard: v || undefined, hat: undefined }), spec.beard ?? '', (v) => (v ? set({ beard: v }) : set({}, ['beard', 'beardColor'])))));
-    if (spec.beard) out.push(field(T.beardColor, swatches(entries(STACHE_COLORS, STACHE_COLOR_ES), colorOf(STACHE_COLORS, spec.beardColor ?? spec.stache, STACHE_COLORS.brown), (hex) => set({ beardColor: keyOf(STACHE_COLORS, hex) ?? hex }))));
+    if (spec.stache) out.push(field(T.stacheColor, swatches(entries(STACHE_COLORS, L.stacheColor), colorOf(STACHE_COLORS, spec.stache, STACHE_COLORS.brown), (hex) => set({ stache: keyOf(STACHE_COLORS, hex) ?? hex }))));
+    out.push(field(T.beard, tiles(['', ...BEARDS], (v) => (v ? L.beard[v] : T.noBeard), (v) => ({ ...spec, beard: v || undefined, hat: undefined }), spec.beard ?? '', (v) => (v ? set({ beard: v }) : set({}, ['beard', 'beardColor'])))));
+    if (spec.beard) out.push(field(T.beardColor, swatches(entries(STACHE_COLORS, L.stacheColor), colorOf(STACHE_COLORS, spec.beardColor ?? spec.stache, STACHE_COLORS.brown), (hex) => set({ beardColor: keyOf(STACHE_COLORS, hex) ?? hex }))));
     return out;
   }
 
@@ -331,13 +317,13 @@ export function createAvatarEditor(container: HTMLElement, opts: AvatarEditorOpt
       out.push(
         field(
           T.eyewear,
-          tiles(['', ...EYEWEAR], (v) => (v ? EYEWEAR_ES[v] : T.noEyewear), (v) => ({ ...spec, glasses: undefined, aviators: undefined, eyewear: v || undefined, hat: undefined }), current, (v) =>
+          tiles(['', ...EYEWEAR], (v) => (v ? L.eyewear[v] : T.noEyewear), (v) => ({ ...spec, glasses: undefined, aviators: undefined, eyewear: v || undefined, hat: undefined }), current, (v) =>
             v ? set({ eyewear: v }, ['glasses', 'aviators']) : set({}, ['eyewear', 'glasses', 'aviators']),
           ),
         ),
       );
     }
-    out.push(field(T.hat, tiles(['', ...HATS], (v) => (v ? HAT_ES[v] : T.noHat), (v) => ({ ...spec, hat: v || undefined, hatColor: undefined }), spec.hat ?? '', (v) => (v ? set({ hat: v }, ['hatColor']) : set({}, ['hat', 'hatColor'])), 'happy')));
+    out.push(field(T.hat, tiles(['', ...HATS], (v) => (v ? L.hat[v] : T.noHat), (v) => ({ ...spec, hat: v || undefined, hatColor: undefined }), spec.hat ?? '', (v) => (v ? set({ hat: v }, ['hatColor']) : set({}, ['hat', 'hatColor'])), 'happy')));
     if (spec.hat) out.push(field(T.hatColor, swatches(HAT_SWATCHES.map((c) => [c, c]), spec.hatColor ?? HAT_COLORS[spec.hat], (hex) => set({ hatColor: hex })), btn(T.hatOriginal, () => set({}, ['hatColor']), 'kua-btn kua-btn-small')));
     const flags = el('div', 'kua-chips');
     for (const k of ['flower', 'gloves'] as Flag[]) {
